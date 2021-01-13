@@ -25,7 +25,7 @@ gnjdg = (guess, callback) => {
   } else callback("guess number must be 4 non-repeat digits" + guess);
 }
 
-theNumber = '1234'
+theNumber = "1234"
 
 guess_number = () => {
   theNumber = generate()
