@@ -9,6 +9,13 @@ announce = (msg) => {
   drrr.print(msg)
 }
 
+scene = (desc) => {
+  announcement = msg
+  if room.host == user.id
+  then drrr.descr(msg)
+  else drrr.print(msg)
+}
+
 // 0 狼 1 平民 2 預言家 3 女巫 4 獵人
 roleName = ["狼", "平民", "預言家", "女巫", "獵人"]
 rolesMap = {
@@ -59,7 +66,7 @@ state prepare {
   vote = {}
   event [msg, me] (user, cont: "^\\+1$") => {
     if names.includes(user) then
-      drrr.print("/me" + user + " 已經加入了")
+    drrr.print("/me" + user + " 已經加入了")
     else{
       names.push(user)
       drrr.print("/me" + user + " 加入遊戲")
@@ -74,7 +81,7 @@ state prepare {
   }
   event [msg, me] (user, cont: "^/who$") => {
     if names.length then {
-    	drrr.print("玩家：\n" + names.map((user, index) => String(index + 1) + ". " + user).join("\n"))
+      drrr.print("玩家：\n" + names.map((user, index) => String(index + 1) + ". " + user).join("\n"))
     } else drrr.print("/me 沒有玩家")
   }
   event [msg, me] (user, cont: "^/start$") => {
@@ -86,10 +93,10 @@ state prepare {
 
 newPlayer = (name, role) => {
   name: name,
-  life: true,
-  role: role,
-  rname: roleName[role],
-  diefor: ""
+    life: true,
+    role: role,
+    rname: roleName[role],
+    diefor: ""
 }
 
 state prelude {
@@ -112,7 +119,7 @@ state prelude {
 }
 
 state night {
-  announce("/me天黑請閉眼")
+  scene("/me天黑請閉眼/night")
   later 3500 going night_seer
 }
 
@@ -124,7 +131,7 @@ state night_seer {
 
     forEach(players, (p, index) => {
       if p.life && p.role == 2 then
-        later 1000 drrr.dm(p.name, "想知道什麼")
+      later 1000 drrr.dm(p.name, "想知道什麼")
     })
 
     event dm (seer, cont) => {
@@ -152,7 +159,7 @@ state night_wolf {
 
   forEach(players, (p, index) => {
     if p.life && p.role == 0 then
-      later (2000 * index) drrr.dm(p.name, "要殺人嗎")
+    later (2000 * index) drrr.dm(p.name, "要殺人嗎")
   })
 
   event dm (wolf, cont) => {
@@ -226,47 +233,10 @@ state night_witch {
   } else later (getRandom(10, 30) * 1000) going night_end
 }
 
-state night_end {
-
-  show = 0
-
-  go_next = {
-    drrr.print("/me倖存者：" + filter(players, p => p.life).map(p => p.name).join(", "))
-    if passJudge() < 0
-    then later 3500 going day_discussion
-    else later 3500 going game_over
-  }
-
-  if victim.length then {
-    announce("/me天亮了," + victim.map((x)=>"@" + x).join(", ") + "死了")
-
-    victim.forEach((name) => {
-      if players[name].role == 4 && players[name].diefor == "bite"
-      then visit hunter_ask
-    })
-
-    later 3500 {
-      drrr.print("/me請大家默哀三十秒")
-      later 30000 {
-        victim.forEach((name) => {
-          players[name].life = false;
-        })
-
-        if show
-        then visit hunter_fire
-        else go_next()
-      }
-    }
-  } else {
-    announce("/me天亮了 沒有人死")
-    later 3500 go_next
-  }
-}
-
 state hunter_ask {
   forEach(players, (p, index) => {
     if p.life && p.role == 4 then
-      later 1000 drrr.dm(p.name, "十五秒內發任何訊息以亮獵人牌")
+    later 1000 drrr.dm(p.name, "十五秒內發任何訊息以亮獵人牌")
   })
   event [dm, msg, me] (hunter, cont) => {
     if hunter in players then {
@@ -280,18 +250,60 @@ state hunter_ask {
 state hunter_fire {
   drrr.print("/me獵人 @" + hunter + " 在臨死前開了一槍並打到了...[人名]")
   event [msg, me] (hunter, cont) => {
-      if hunter in players then {
-        if players[hunter].role == 4 then {
-            the = select(cont, names)
-            if the then {
-              if players[the].life then {
-                players[the].life = false
-                go_next()
-              } else drrr.dm(user, "這個人已經死了")
-            } else drrr.dm(user, "沒有這個人")
-        }
+    if hunter in players then {
+      if players[hunter].role == 4 then {
+        the = select(cont, names)
+        if the then {
+          if players[the].life then {
+            players[the].life = false
+            go_next()
+          } else drrr.dm(user, "這個人已經死了")
+        } else drrr.dm(user, "沒有這個人")
       }
     }
+  }
+}
+
+state night_end {
+
+  show = 0
+
+  go_next = {
+    drrr.print("/me倖存者：" + filter(players, p => p.life).map(p => p.name).join(", "))
+    if passJudge() < 0
+    then later 3500 going day_discussion
+    else later 3500 going game_over
+  }
+
+  scene("東方漸泛魚肚白/morning")
+
+  later 3000 {
+    if victim.length then {
+
+      announce("/me" + victim.map((x)=>"@" + x).join(", ") + "死了")
+
+      victim.forEach((name) => {
+        if players[name].role == 4 && players[name].diefor == "bite"
+        then visit hunter_ask
+      })
+
+      later 3500 {
+        drrr.print("/me請大家默哀三十秒")
+        later 30000 {
+          victim.forEach((name) => {
+            players[name].life = false;
+          })
+
+          if show
+          then visit hunter_fire
+          else go_next()
+        }
+      }
+    } else {
+      announce("/me天亮了 沒有人死")
+      later 3500 go_next
+    }
+  }
 }
 
 state day_discussion {
