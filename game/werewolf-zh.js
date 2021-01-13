@@ -14,10 +14,9 @@ roleName = ["狼", "平民", "預言家", "女巫", "獵人"]
 rolesMap = {
   5: [0, 1, 1, 2, 3],
   6: [0, 0, 1, 1, 2, 3],
-  7: [0, 0, 1, 1, 1, 2, 3]
+  7: [0, 0, 1, 1, 1, 2, 3],
   8: [0, 0, 1, 1, 1, 2, 3, 4],
 }
-
 
 getRandom = (min,max) => {
   Math.floor(Math.random()*(max-min+1))+min
@@ -105,7 +104,7 @@ state prelude {
 
   wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
   forEach(players, (p, index) => {
-    if p.role then later index * 3500 drrr.dm(p.name, "你的身份是:" + p.rname])
+    if p.role then later index * 3500 drrr.dm(p.name, "你的身份是:" + p.rname)
     else later index * 3500 drrr.dm(p.name, "你是狼, 所有狼是：" + wolves)
   })
 
@@ -207,7 +206,7 @@ state night_witch {
                 poisoned = 1
                 later 3500 going night_end
               } else if cont.includes("毒") then {
-                if the.length {
+                if the.length then {
                   if players[the].life then{
                     if !victim.includes(the)
                     then {
