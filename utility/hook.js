@@ -1,5 +1,7 @@
 // hook event action in BotScript
-// eas = [ [ "join", "", "", "msg", [ "hello $user" ] ] ]
+// usage:
+//   rules = [ [ "join", "", "", "msg", [ "hello $user" ] ] ]
+//   hook(rules);
 hook = (eas) => {
   setting = { "EventAction-setting": eas }
   chrome.runtime.onMessage.addListener((req, sender, callback) => {

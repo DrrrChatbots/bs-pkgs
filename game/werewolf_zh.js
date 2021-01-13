@@ -1,3 +1,6 @@
+// usage:
+//   werewolf_zh();
+
 names = []
 players = {}
 victim = []
@@ -407,26 +410,28 @@ state game_over {
   later 2000 drrr.print(cur_role)
 }
 
-event [msg, me, dm] (user, cont: "^/char$") => {
-  if user in players then {
-    wolves = filter(players, (p, index) => p.role == 0).join(", ")
-    if players[user].role then drrr.dm(user, "你的身份是:" + players[user].rname)
-    else drrr.dm(user, "你是狼, 所有狼是：" + wolves)
-  } else drrr.dm(user, "你不是玩家")
-}
+werewolf_zh = () => {
+  event [msg, me, dm] (user, cont: "^/char$") => {
+    if user in players then {
+      wolves = filter(players, (p, index) => p.role == 0).join(", ")
+      if players[user].role then drrr.dm(user, "你的身份是:" + players[user].rname)
+      else drrr.dm(user, "你是狼, 所有狼是：" + wolves)
+    } else drrr.dm(user, "你不是玩家")
+  }
 
-event [msg, me, dm] (user, cont: "^/all$") => {
-  if Object.keys(players).length
-  then drrr.print("玩家：\n" + map(players, (p, index) => String(index + 1) + ". " + p.name + (if p.life then " 活" else " 死")).join("\n"))
-  else drrr.print("/me沒有玩家，請開始遊戲")
-}
+  event [msg, me, dm] (user, cont: "^/all$") => {
+    if Object.keys(players).length
+    then drrr.print("玩家：\n" + map(players, (p, index) => String(index + 1) + ". " + p.name + (if p.life then " 活" else " 死")).join("\n"))
+    else drrr.print("/me沒有玩家，請開始遊戲")
+  }
 
-event [msg, me, dm] (user, cont: "^/now$") => {
-  drrr.print(announcement)
-}
+  event [msg, me, dm] (user, cont: "^/now$") => {
+    drrr.print(announcement)
+  }
 
-event [msg, me, dm] (user, cont: "^/help$") => {
-  drrr.print("/help 本手冊\n/now 現在遊戲狀態\n/all 當前所有玩家\n/char 當前擔任角色\n/werewolf 開始報名（如有遊戲則重新）")
-}
+  event [msg, me, dm] (user, cont: "^/help$") => {
+    drrr.print("/help 本手冊\n/now 現在遊戲狀態\n/all 當前所有玩家\n/char 當前擔任角色\n/werewolf 開始報名（如有遊戲則重新）")
+  }
 
-event [msg, me] (user, cont: "^/werewolf$") => going prepare
+  event [msg, me] (user, cont: "^/werewolf$") => going prepare
+}
