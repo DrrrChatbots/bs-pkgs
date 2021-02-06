@@ -1,4 +1,7 @@
 [{"type":"directory","name": ".","contents":[
+    {"type":"directory","name":"action","contents":[
+      {"type":"file","name":"wb.js"}
+    ]},
     {"type":"directory","name":"game","contents":[
       {"type":"file","name":"guess_number.js"},
       {"type":"file","name":"werewolf_zh.js"},
@@ -9,8 +12,8 @@
     {"type":"file","name":"README.md"},
     {"type":"directory","name":"utility","contents":[
       {"type":"file","name":"hook.js"},
-      {"type":"file","name":"welcome_back.js"}
+      {"type":"file","name":"wb.js"}
     ]}
   ]},
-  {"type":"report","directories":2,"files":8}
+  {"type":"report","directories":3,"files":9}
 ]
