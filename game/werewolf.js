@@ -587,4 +587,8 @@ werewolf = (lang) => {
   }
 
   event [msg, me] (user, cont: "^/werewolf$") => going prepare
+
+  going prepare
 }
+
+console.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" is available now")
