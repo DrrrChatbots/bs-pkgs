@@ -89,7 +89,7 @@ state prepare {
   }
   event [msg, me] (user, cont: "^/start$") => {
     if names.length in rolesMap then going prelude
-    else drrr.print("/meNeed 5 - 8 people, " + String(names.length) + " people curret.")
+    else drrr.print("/meNeed 5 - 8 people, " + String(names.length) + " people current.")
   }
   announce("/me [+1] join, [-1] leave, [/who] participator, [/start] start")
 }

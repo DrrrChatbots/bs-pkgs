@@ -5,6 +5,7 @@
     {"type":"directory","name":"game","contents":[
       {"type":"file","name":"guess_number.js"},
       {"type":"file","name":"werewolf_en.js"},
+      {"type":"file","name":"werewolf.js"},
       {"type":"file","name":"werewolf_zh.js"},
       {"type":"file","name":"werewolf_zh_pre.js"}
     ]},
@@ -19,5 +20,5 @@
       {"type":"file","name":"wb.js"}
     ]}
   ]},
-  {"type":"report","directories":4,"files":11}
+  {"type":"report","directories":4,"files":12}
 ]
