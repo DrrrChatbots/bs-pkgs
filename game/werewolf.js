@@ -591,4 +591,4 @@ werewolf = (lang) => {
   going prepare
 }
 
-console.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" is available now")
+console.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" are available now")
