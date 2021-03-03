@@ -6,8 +6,8 @@
       {"type":"file","name":"guess_number.js"},
       {"type":"file","name":"werewolf_en.js"},
       {"type":"file","name":"werewolf.js"},
-      {"type":"file","name":"werewolf_zh.js"},
-      {"type":"file","name":"werewolf_zh_pre.js"}
+      {"type":"file","name":"werewolf_refactoring.js"},
+      {"type":"file","name":"werewolf_zh.js"}
     ]},
     {"type":"file","name":"index.json"},
     {"type":"file","name":"push.sh"},
