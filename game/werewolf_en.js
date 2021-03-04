@@ -13,10 +13,10 @@ announce = (msg) => {
 }
 
 scene = (desc) => {
-  announcement = msg
+  announcement = desc
   if room.host == user.id
-  then drrr.descr(msg)
-  else drrr.print(msg)
+  then drrr.descr(desc)
+  else drrr.print(desc)
 }
 
 // 0 狼 1 平民 2 預言家 3 女巫 4 獵人
@@ -305,7 +305,7 @@ state night_end {
       }
     } else {
       announce("/meMorning, no one died")
-      later 3500 go_next
+      later 3500 go_next()
     }
   }
 }

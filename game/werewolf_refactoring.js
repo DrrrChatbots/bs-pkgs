@@ -157,10 +157,10 @@ announce = (msg) => {
 }
 
 scene = (desc) => {
-  announcement = msg
+  announcement = desc
   if room.host == user.id
-  then drrr.descr(msg)
-  else drrr.print(msg)
+  then drrr.descr(desc)
+  else drrr.print(desc)
 }
 
 // 0 werewolf 1 villagers 2 seer 3 witch 4 hunter
@@ -472,7 +472,7 @@ state night_end {
       }
     } else {
       announce(me(T("morningSafe")))
-      later 3500 go_next
+      later 3500 go_next()
     }
   }
 }
