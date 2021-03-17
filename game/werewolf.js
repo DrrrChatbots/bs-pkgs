@@ -159,7 +159,7 @@ announce = (msg) => {
 scene = (desc) => {
   announcement = desc
   if room.host == user.id
-  then drrr.descr(desc)
+  then drrr.descr(desc.replace("/me", ""))
   else drrr.print(desc)
 }
 

@@ -15,7 +15,7 @@ announce = (msg) => {
 scene = (desc) => {
   announcement = desc
   if room.host == user.id
-  then drrr.descr(desc)
+  then drrr.descr(desc.replace("/me", ""))
   else drrr.print(desc)
 }
 
@@ -283,7 +283,7 @@ state night_end {
     else later 3500 going game_over
   }
 
-  scene("東方漸泛魚肚白/morning")
+  scene("/me東方漸泛魚肚白/morning")
 
   later 3000 {
     if victim.length then {
