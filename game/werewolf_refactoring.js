@@ -454,7 +454,7 @@ state night_end {
   later 3000 {
     if victim.length then {
 
-      announce(me(T("died")(victim.map((x)=>"@" + x)).join(", ")))
+      announce(me(T("died")(victim.map((x)=>"@" + x).join(", "))))
 
       victim.forEach((name) => {
         if players[name].role == 4 && players[name].diefor == "bite"
@@ -506,7 +506,8 @@ state day_vote {
 
   later 1000 drrr.print(T("voteNote")(survivor.map((u) => "@" + u.name).join("\n")))
 
-  event [msg, me] (user, cont: "/vote\\s+\\S+|/execute") => {
+  event [msg, me] (user, cont: "^/vote\\s+\\S+|/execute") => {
+    cont = cont.replace("/vote", "")
     if !(user in players) then
       drrr.print(me(T("beQuiet")(user)))
     else if !players[user].life then
