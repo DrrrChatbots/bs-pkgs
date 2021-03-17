@@ -332,14 +332,14 @@ state day_discussion {
 }
 
 state day_vote {
-  announce("/mePlease start voting ([/vote] check voted, [/urge] reminder, [/execute] skip vote, [name] or [no] abstain)")
+  announce("/mePlease start voting ([/vote] check voted, [/urge] reminder, [/execute] skip, [/vote name] or [/vote no] abstain)")
   vote = {}
 
   survivor = filter(players, (p, idx) => p.life)
 
   later 1000 drrr.print("Message to vote, candidates:\n" + survivor.map((u) => "@" + u.name).join("\n"))
 
-  event [msg, me] (user, cont) => {
+  event [msg, me] (user, cont: "/vote\\s+\\S+|/execute") => {
     if user in players then {
       if players[user].life then {
         if cont.startsWith("/execute")

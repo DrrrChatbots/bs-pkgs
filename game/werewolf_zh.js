@@ -332,14 +332,14 @@ state day_discussion {
 }
 
 state day_vote {
-  announce("/me請開始投票 ([/vote] 看已投票, [/urge] 催票, [/execute] 跳過投票, [人名] 或是 [no] 棄票)")
+  announce("/me請開始投票 ([/vote] 看已投票, [/urge] 催票, [/execute] 跳過投票, [/vote 人名] 或是 [/vote no] 棄票)")
   vote = {}
 
   survivor = filter(players, (p, idx) => p.life)
 
   later 1000 drrr.print("發言以投票，選項有：\n" + survivor.map((u) => "@" + u.name).join("\n"))
 
-  event [msg, me] (user, cont) => {
+  event [msg, me] (user, cont: "/vote\\s+\\S+|/execute") => {
     if user in players then {
       if players[user].life then {
         if cont.startsWith("/execute")

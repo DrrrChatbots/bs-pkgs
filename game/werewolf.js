@@ -55,7 +55,7 @@ i18n = {
     "rip30s": "R.I.P for 30 secs",
     "morningSafe": "Morning, no one died",
     "speaking": n => "@" + n + " start speaking (end with [over])",
-    "voting": "Please start voting ([/vote] check voted, [/urge] reminder, [/execute] skip vote, [name] or [no] abstain)",
+    "voting": "Please start voting ([/vote] check voted, [/urge] reminder, [/execute] skip, [/vote name] or [/vote no] abstain)",
     "voteNote": cans => "Message to vote, candidates:\n" + cans,
     "oneVote": "Only one vote is allowed",
     "checkVote": t => "Ok, you vote " + t,
@@ -122,7 +122,7 @@ i18n = {
     "rip30s": "請大家默哀三十秒",
     "morningSafe": "天亮了，沒有人死",
     "speaking": n => "請 @" + n + " 開始發言 ([over] 結尾)",
-    "voting": "請開始投票 ([/vote] 看已投票, [/urge] 催票, [/execute] 跳過投票, [人名] 或是 [no] 棄票)",
+    "voting": "請開始投票 ([/vote] 看已投票, [/urge] 催票, [/execute] 跳過投票, [/vote 人名] 或是 [/vote no] 棄票)",
     "voteNote": cans => "發言以投票，選項有：\n" + cans,
     "oneVote": "一人一票，落票無悔",
     "checkVote": t => "ok, 你投了 " + t,
@@ -486,7 +486,7 @@ state day_vote {
   later 1000 drrr.print(T("voteNote")(survivor.map((u) => "@" + u.name).join("\n")))
 
 
-  event [msg, me] (user, cont) => {
+  event [msg, me] (user, cont: "/vote\\s+\\S+|/execute") => {
     if user in players then {
       if players[user].life then {
         if cont.startsWith("/execute")
