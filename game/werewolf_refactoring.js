@@ -324,8 +324,11 @@ state night_wolf {
       drrr.dm(user, T("notWerewolf"))
     else if !players[wolf].life then
       drrr.dm(user, T("deadWerewolf"))
-    else if cont.startsWith("no") then
+    else if cont.startsWith("no") then {
       victim = []
+      killed = 1
+      later 3500 going night_witch
+    }
     else if killed then
       drrr.dm(wolf, T("oneKill"))
     else {

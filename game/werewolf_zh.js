@@ -179,7 +179,11 @@ state night_wolf {
                 later 3500 going night_witch
               } else drrr.dm(wolf, "沒這個人")
             } else drrr.dm(wolf, "只能殺一次")
-          } else victim = []
+          } else {
+            victim = []
+            killed = 1
+            later 3500 going night_witch
+          }
         } else drrr.dm(user, "你是死掉的狼人")
       } else drrr.dm(user, "你不是狼人")
     } else drrr.print("/me@" + wolf + " 不要吵！")

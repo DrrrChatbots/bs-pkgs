@@ -323,7 +323,11 @@ state night_wolf {
                 later 3500 going night_witch
               } else drrr.dm(wolf, T("noSuchPeople"))
             } else drrr.dm(wolf, T("oneKill"))
-          } else victim = []
+          } else {
+            victim = []
+            killed = 1
+            later 3500 going night_witch
+          }
         } else drrr.dm(user, T("deadWerewolf"))
       } else drrr.dm(user, T("notWerewolf"))
     } else drrr.print(me(T("beQuiet")(wolf)))

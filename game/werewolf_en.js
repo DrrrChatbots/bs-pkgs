@@ -179,7 +179,11 @@ state night_wolf {
                 later 3500 going night_witch
               } else drrr.dm(wolf, "No such people")
             } else drrr.dm(wolf, "Only one kill is allowed")
-          } else victim = []
+          } else {
+            victim = []
+            killed = 1
+            later 3500 going night_witch
+          }
         } else drrr.dm(user, "You are dead werewolf")
       } else drrr.dm(user, "You are not werewolf")
     } else drrr.print("/me@" + wolf + " BE QUIET!")
