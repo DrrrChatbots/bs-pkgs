@@ -332,38 +332,38 @@ state day_discussion {
 }
 
 state day_vote {
-  announce("/me請開始投票 ([/vote] 看已投票, [/urge] 催票, *私信* [人名] 或是 [no] 棄票)")
+  announce("/me請開始投票 ([/vote] 看已投票, [/urge] 催票, [/execute] 跳過投票, [人名] 或是 [no] 棄票)")
   vote = {}
 
   survivor = filter(players, (p, idx) => p.life)
 
-  forEach(players, (p, index) => {
-    if p.life then later (2000 * index) drrr.dm(p.name, "請私信我投票，選項有：\n" + survivor.map((u) => "@" + u.name).join("\n"))
-  })
+  later 1000 drrr.print("發言以投票，選項有：\n" + survivor.map((u) => "@" + u.name).join("\n"))
 
-  event dm (user, cont) => {
+  event [msg, me] (user, cont) => {
     if user in players then {
       if players[user].life then {
-        if vote.hasOwnProperty(user)
-        then drrr.dm(user, "一人一票，落票無悔")
+        if cont.startsWith("/execute")
+        then later 3500 going day_execute
+        else if vote.hasOwnProperty(user)
+        then drrr.print("一人一票，落票無悔")
         else {
           the = select(cont, names)
           if the then {
             if players[the].life then {
               vote[user] = the
-              drrr.dm(user, "ok, 你投了 " + the)
+              drrr.print("ok, 你投了 " + the)
               if Object.keys(vote).length == filter(players, p => p.life).length
               then later 3500 going day_execute
-            } else drrr.dm(user, the + " 已經是個死人了，不要鞭屍好嗎。")
+            } else drrr.print(the + " 已經是個死人了，不要鞭屍好嗎。")
           }
           else if cont.startsWith("no") then {
             vote[user] = "no"
-            drrr.dm(user, "ok, 你棄票了")
+            drrr.print("ok, 你棄票了")
             if Object.keys(vote).length == filter(players, p => p.life).length
             then later 3500 going day_execute
-          } else drrr.dm(user, "沒這個人")
+          } else drrr.print("沒這個人")
         }
-      } else drrr.dm(user, "死人還想投票啊？")
+      } else drrr.print("死人還想投票啊？")
     } else drrr.print("/me@" + user + " 不要吵！")
   }
   event [msg, me] (user, cont: "^/vote$") => {

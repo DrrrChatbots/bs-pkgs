@@ -332,38 +332,38 @@ state day_discussion {
 }
 
 state day_vote {
-  announce("/mePlease start voting ([/vote] check voted, [/urge] reminder, *dm* [name] or [no] abstain)")
+  announce("/mePlease start voting ([/vote] check voted, [/urge] reminder, [/execute] skip vote, [name] or [no] abstain)")
   vote = {}
 
   survivor = filter(players, (p, idx) => p.life)
 
-  forEach(players, (p, index) => {
-    if p.life then later (2000 * index) drrr.dm(p.name, "Please dm me to vote, candidates:\n" + survivor.map((u) => "@" + u.name).join("\n"))
-  })
+  later 1000 drrr.print("Message to vote, candidates:\n" + survivor.map((u) => "@" + u.name).join("\n"))
 
-  event dm (user, cont) => {
+  event [msg, me] (user, cont) => {
     if user in players then {
       if players[user].life then {
-        if vote.hasOwnProperty(user)
-        then drrr.dm(user, "Only one vote is allowed")
+        if cont.startsWith("/execute")
+        then later 3500 going day_execute
+        else if vote.hasOwnProperty(user)
+        then drrr.print("Only one vote is allowed")
         else {
           the = select(cont, names)
           if the then {
             if players[the].life then {
               vote[user] = the
-              drrr.dm(user, "Ok, you vote " + the)
+              drrr.print("Ok, you vote " + the)
               if Object.keys(vote).length == filter(players, p => p.life).length
               then later 3500 going day_execute
-            } else drrr.dm(user, the + " is already dead")
+            } else drrr.print(the + " is already dead")
           }
           else if cont.startsWith("no") then {
             vote[user] = "no"
-            drrr.dm(user, "Ok, abstain")
+            drrr.print("Ok, abstain")
             if Object.keys(vote).length == filter(players, p => p.life).length
             then later 3500 going day_execute
-          } else drrr.dm(user, "No such people")
+          } else drrr.print("No such people")
         }
-      } else drrr.dm(user, "You are already dead")
+      } else drrr.print("You are already dead")
     } else drrr.print("/me@" + user + " BE QUIET!")
   }
   event [msg, me] (user, cont: "^/vote$") => {
