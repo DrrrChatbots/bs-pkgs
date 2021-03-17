@@ -335,7 +335,7 @@ state day_vote {
   announce("/me請開始投票 ([/vote] 看已投票, [/urge] 催票, *私信* [人名] 或是 [no] 棄票)")
   vote = {}
 
-  survivor = filter(players, (p, idx) => p.live)
+  survivor = filter(players, (p, idx) => p.life)
 
   forEach(players, (p, index) => {
     if p.life then later (2000 * index) drrr.dm(p.name, "請私信我投票，選項有：\n" + survivor.map((u) => "@" + u.name).join("\n"))

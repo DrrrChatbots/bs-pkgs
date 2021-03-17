@@ -335,7 +335,7 @@ state day_vote {
   announce("/mePlease start voting ([/vote] check voted, [/urge] reminder, *dm* [name] or [no] abstain)")
   vote = {}
 
-  survivor = filter(players, (p, idx) => p.live)
+  survivor = filter(players, (p, idx) => p.life)
 
   forEach(players, (p, index) => {
     if p.life then later (2000 * index) drrr.dm(p.name, "Please dm me to vote, candidates:\n" + survivor.map((u) => "@" + u.name).join("\n"))
