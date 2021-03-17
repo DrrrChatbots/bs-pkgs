@@ -313,7 +313,7 @@ state night_wolf {
 
   forEach(players, (p, index) => {
     if p.life && p.role == 0 then
-    later (2000 * index) drrr.dm(p.name, T("askKill"))
+    later (2000 * index + 1000) drrr.dm(p.name, T("askKill"))
   })
 
   event dm (wolf, cont) => {
@@ -506,14 +506,14 @@ state day_vote {
 
   later 1000 drrr.print(T("voteNote")(survivor.map((u) => "@" + u.name).join("\n")))
 
-  event [msg, me] (user, cont: "^/vote\\s+\\S+|/execute") => {
+  event [msg, me] (user, cont: "^/vote\\s+\\S+|^/execute") => {
     cont = cont.replace("/vote", "").trim()
     if !(user in players) then
       drrr.print(me(T("beQuiet")(user)))
     else if !players[user].life then
       drrr.print(T("deadVote"))
     else if cont.startsWith("/execute") then
-      later 3500 going day_execute
+      later 1000 going day_execute
     else if vote.hasOwnProperty(user) then
       drrr.print(T("oneVote"))
     else {

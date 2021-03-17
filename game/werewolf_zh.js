@@ -162,7 +162,7 @@ state night_wolf {
 
   forEach(players, (p, index) => {
     if p.life && p.role == 0 then
-    later (2000 * index) drrr.dm(p.name, "要殺人嗎")
+    later (2000 * index + 1000) drrr.dm(p.name, "要殺人嗎")
   })
 
   event dm (wolf, cont) => {
@@ -339,12 +339,12 @@ state day_vote {
 
   later 1000 drrr.print("發言以投票，選項有：\n" + survivor.map((u) => "@" + u.name).join("\n"))
 
-  event [msg, me] (user, cont: "^/vote\\s+\\S+|/execute") => {
+  event [msg, me] (user, cont: "^/vote\\s+\\S+|^/execute") => {
     cont = cont.replace("/vote", "").trim()
     if user in players then {
       if players[user].life then {
         if cont.startsWith("/execute")
-        then later 3500 going day_execute
+        then later 1000 going day_execute
         else if vote.hasOwnProperty(user)
         then drrr.print("一人一票，落票無悔")
         else {
