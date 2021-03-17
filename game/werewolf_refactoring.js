@@ -596,7 +596,7 @@ werewolf = (lang) => {
     if user in players then
       drrr.dm(user, T("notPlayer"))
     else {
-      wolves = filter(players, (p, index) => p.role == 0).join(", ")
+      wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
       if players[user].role then drrr.dm(user, T("UrRole")(players[user].rname))
       else drrr.dm(user, T("UrWerewolf")(wolves))
     }

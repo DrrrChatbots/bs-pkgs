@@ -418,7 +418,7 @@ state game_over {
 werewolf_en = () => {
   event [msg, me, dm] (user, cont: "^/char$") => {
     if user in players then {
-      wolves = filter(players, (p, index) => p.role == 0).join(", ")
+      wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
       if players[user].role then drrr.dm(user, "You are " + players[user].rname)
       else drrr.dm(user, "You are werewolf, all werewolves are:" + wolves)
     } else drrr.dm(user, "You are not player")

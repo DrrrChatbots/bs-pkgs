@@ -418,7 +418,7 @@ state game_over {
 werewolf_zh = () => {
   event [msg, me, dm] (user, cont: "^/char$") => {
     if user in players then {
-      wolves = filter(players, (p, index) => p.role == 0).join(", ")
+      wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
       if players[user].role then drrr.dm(user, "你的身份是:" + players[user].rname)
       else drrr.dm(user, "你是狼, 所有狼是：" + wolves)
     } else drrr.dm(user, "你不是玩家")

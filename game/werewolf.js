@@ -570,7 +570,7 @@ werewolf = (lang) => {
 
   event [msg, me, dm] (user, cont: "^/char$") => {
     if user in players then {
-      wolves = filter(players, (p, index) => p.role == 0).join(", ")
+      wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
       if players[user].role then drrr.dm(user, T("UrRole")(players[user].rname))
       else drrr.dm(user, T("UrWerewolf")(wolves))
     } else drrr.dm(user, T("notPlayer"))
