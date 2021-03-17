@@ -507,7 +507,7 @@ state day_vote {
   later 1000 drrr.print(T("voteNote")(survivor.map((u) => "@" + u.name).join("\n")))
 
   event [msg, me] (user, cont: "^/vote\\s+\\S+|/execute") => {
-    cont = cont.replace("/vote", "")
+    cont = cont.replace("/vote", "").trim()
     if !(user in players) then
       drrr.print(me(T("beQuiet")(user)))
     else if !players[user].life then

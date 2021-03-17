@@ -487,7 +487,7 @@ state day_vote {
 
 
   event [msg, me] (user, cont: "^/vote\\s+\\S+|/execute") => {
-    cont = cont.replace("/vote", "")
+    cont = cont.replace("/vote", "").trim()
     if user in players then {
       if players[user].life then {
         if cont.startsWith("/execute")
