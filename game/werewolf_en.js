@@ -114,8 +114,8 @@ state prelude {
 
   wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
   forEach(players, (p, index) => {
-    if p.role then later index * 3500 drrr.dm(p.name, "You are " + p.rname)
-    else later index * 3500 drrr.dm(p.name, "You are werewolf, all werewolves are " + wolves)
+    if p.role then later (index * 3500 + 1000) drrr.dm(p.name, "You are " + p.rname)
+    else later (index * 3500 + 1000) drrr.dm(p.name, "You are werewolf, all werewolves are " + wolves)
   })
 
   later names.length * 4000 going night
