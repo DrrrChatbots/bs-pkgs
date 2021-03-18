@@ -368,8 +368,8 @@ state night_witch {
                   if players[the].life then{
                     if !victim.includes(the)
                     then {
-                      victim.push(user)
-                      players[user].diefor = "poison"
+                      victim.push(the)
+                      players[the].diefor = "poison"
                     }
                     poisoned = 1
                     later 3500 going night_end
