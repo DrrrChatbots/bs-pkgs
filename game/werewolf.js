@@ -228,7 +228,7 @@ state prepare {
   }
   event [msg, me] (user, cont: "^/who$") => {
     if names.length then {
-      drrr.print(T("player") + ":\n" + names.map((user, index) => String(index + 1) + ". " + user).join("\n"))
+      drrr.print(T("players") + ":\n" + names.map((user, index) => String(index + 1) + ". " + user).join("\n"))
     } else drrr.print(me(T("noPlayer")))
   }
   event [msg, me] (user, cont: "^/start$") => {
