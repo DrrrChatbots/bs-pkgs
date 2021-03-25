@@ -228,7 +228,7 @@ state prepare {
   }
   event [msg, me] (user, cont: "^/who$") => {
     if names.length then {
-      drrr.print(T("players") + ":\n" + names.map((user, index) => String(index + 1) + ". " + user).join("\n"))
+      drrr.print(T("players")(names.map((user, index) => String(index + 1) + ". " + user).join("\n")))
     } else drrr.print(me(T("noPlayer")))
   }
   event [msg, me] (user, cont: "^/start$") => {
@@ -399,6 +399,7 @@ state hunter_ask {
 }
 
 state hunter_fire {
+  hunter = Object.values(players).find(p => p.role == 4)
   drrr.print(me(T("fired")(hunter)))
   event [msg, me] (hunter, cont) => {
     if hunter in players then {
