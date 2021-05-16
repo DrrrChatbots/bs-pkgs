@@ -87,7 +87,7 @@ i18n = {
     "noPlayer": "沒有玩家",
     "need5to8": len => "需滿足 5 - 8 人, 目前 " + len + "人",
     "noPlayerBeg": "No player, please start the game",
-    "prepare": "/me [+1] 加入, [-1] 退出, [/who] 參賽者, [/start] 開始",
+    "prepare": "[+1] 加入, [-1] 退出, [/who] 參賽者, [/start] 開始",
     "UrRole": r =>  "你的身份是：" + r,
     "UrWerewolf": wvs => "你是狼, 所有狼是：" + wvs,
     "night": "天黑請閉眼/night",
