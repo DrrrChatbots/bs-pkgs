@@ -681,4 +681,3 @@ wolfroom = (lang) => {
 }
 
 console.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" are available now")
-wolfroom("zh");
