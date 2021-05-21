@@ -1,10 +1,6 @@
 // usage:
 //   wolfroom("zh");
 //   wolfroom("en");
-// TODO:
-// - private vote
-// - same vote, revote and same, no dead
-// - if wolf kill all first, win immediately
 
 language = "en"
 
@@ -21,12 +17,13 @@ i18n = {
     "leaves": u => u + " leaves the game",
     "notIn": u => u + " is not in the game",
     "players": ns => "Players:\n" + ns,
-    "noPlayer": "No player",
+    "action" : "Please take action",
     "noPoison": "No poison left",
     "noMedicine": "No medicine left",
-    "need5to8": len => "Need 5 - 8 people, " + len + " people current.",
+    "configNotFit": len => "Need 5 - 9 people, " + len + " people current.",
     "noPlayerBeg": "No player, please start the game",
-    "prepare": "[+1] join, [-1] leave, [/who] player, [/howl] start",
+    "prepare": "[+1] join [-1] out [/go] start [/?] other",
+    "setting": "[/side] side mode\n[/clear] clear mode",
     "UrRole": r =>  "You are " + r,
     "UrWerewolf": wvs => "You are werewolf, all werewolves are " + wvs,
     "night": d => "The " + String(d) + ord(d) + " day. Night, please close your eyes.",
@@ -53,7 +50,8 @@ i18n = {
     "deadWitch": "You are dead witch",
     "notWitch": "You are not witch",
     "hunter15s": "send any message in 15 secs to show you are hunter",
-    "fired": h => "Hunter @" + h + " fired...",
+    "hunterShow": "The hunter is dead! ... and (other dead guys continue their last words)",
+    "fired": h => "Hunter @" + h + " fired... (choose a player)",
     "survivors": ss => "Survivor:" + ss,
     "hit": t => ", and hit " + t + " before he died",
     "morning": d => "The " + String(d) + ord(d) + " day. Morning, Sun Arise.",
@@ -61,7 +59,7 @@ i18n = {
     "rip30s": "R.I.P for 30 secs",
     "morningSafe": "Morning, no one died",
     "speaking": n => "@" + n + " start speaking (end with [over]), [/skip] to skip the guy",
-    "voting": "Please start voting ([/vote] check voted, [/urge] reminder, [/execute] skip, [/vote name] or [/vote no] abstain)",
+    "voting": "Please start voting (can use dm) ([/vote] check voted, [/urge] reminder, [/execute] skip, [/vote name] or [/vote no] abstain)",
     "voteNote": cans => "Message to vote, candidates:\n" + cans,
     "oneVote": "Only one vote is allowed",
     "checkVote": t => "Ok, you vote " + t,
@@ -70,14 +68,16 @@ i18n = {
     "deadVote": "You are already dead",
     "curVote": us => "Current voted:" + us,
     "urgeVote": us => us + " vote, please!",
+    "reVote": us => "Top people:" + us + ", revote",
     "execute": us => "Execute:" + us,
+    "noExecute": us => "Top people again:" + us + ", no execute",
     "draw": "Game Over, draw",
     "peopleWin": "Game Over, people win",
     "werewolvesWin": "Game Over, werewolves win",
     "notPlayer": "You are not player",
     "alive": "Alive",
     "dead": "Dead",
-    "manual": "/help The manual\n/now Game State\n/all All Players\n/char Your Role\n/werewolf Start Participating (Will restart if game is running)"
+    "manual": "/help The manual\n/s Game State\n/w All Players\n/r Your Role\n/game Start Participating (Will restart if game is running)"
   },
   "zh": {
     "notBeg": "尚未開始遊戲",
@@ -91,12 +91,13 @@ i18n = {
     "leaves": u => u + " 退出遊戲",
     "notIn": u => u + " 不在遊戲中",
     "players": ns => "玩家：\n" + ns,
-    "noPlayer": "沒有玩家",
+    "action" : "請採取行動",
     "noPoison": "沒有毒藥了",
     "noMedicine": "沒有解藥了",
-    "need5to8": len => "需滿足 5 - 8 人, 目前 " + len + " 人",
-    "noPlayerBeg": "No player, please start the game",
-    "prepare": "[+1] 加入, [-1] 退出, [/who] 玩家, [/howl] 開始",
+    "configNotFit": len => "需滿足 5 - 8 人, 目前 " + len + " 人",
+    "noPlayerBeg": "沒有玩家，請開始報名程序",
+    "prepare": "[+1] 加入 [-1] 退出 [/go] 開始 [/?] 其他",
+    "setting": "[/side] 屠邊\n[/clear] 屠城\n",
     "UrRole": r =>  "你的身份是：" + r,
     "UrWerewolf": wvs => "你是狼, 所有狼是：" + wvs,
     "night": d => "第 " + String(d) + " 天，天黑請閉眼/夜",
@@ -123,7 +124,8 @@ i18n = {
     "deadWitch": "你是死掉的女巫",
     "notWitch": "你不是女巫",
     "hunter15s": "十五秒內發任何訊息以亮獵人牌",
-    "fired": h => "獵人 @" + h + " 在臨死前開了一槍並打到了...",
+    "hunterShow": "獵人死了！... 然後...（請其他死者繼續發表遺言）",
+    "fired": h => "獵人 @" + h + " 在臨死前開了一槍並打到了...（選一個玩家）",
     "hit": t => "這一槍落到了 @" + t + " 身上",
     "survivors": ss => "倖存者：" + ss,
     "morning": d => "第 " + String(d) + " 天，東方漸泛魚肚白/早上",
@@ -131,7 +133,7 @@ i18n = {
     "rip30s": "請大家默哀三十秒",
     "morningSafe": "天亮了，沒有人死",
     "speaking": n => "請 @" + n + " 開始發言 ([over] 結尾), [/skip] 跳過此人",
-    "voting": "請開始投票 ([/vote] 看已投票, [/urge] 催票, [/execute] 跳過投票, [/vote 人名] 或是 [/vote no] 棄票)",
+    "voting": "請開始投票（可私信）([/vote] 看已投票, [/urge] 催票, [/execute] 跳過投票, [/vote 人名] 或是 [/vote no] 棄票)",
     "voteNote": cans => "發言以投票，選項有：\n" + cans,
     "oneVote": "一人一票，落票無悔",
     "checkVote": t => "ok, 你投了 " + t,
@@ -140,14 +142,16 @@ i18n = {
     "deadVote": "死人還想投票啊？",
     "curVote": us => "目前已投票：" + us,
     "urgeVote": us => us + " 快點投票！",
+    "reVote": us => "最高得票人：" + us + ", 重新投票",
     "execute": us => "處死最高得票人：" + us,
+    "noExecute": us => "仍有多個最高票：" + us + ", 取消死刑",
     "draw": "遊戲結束，平局",
     "peopleWin": "遊戲結束，人類勝出",
     "werewolvesWin": "遊戲結束，狼人勝出",
     "notPlayer": "你不是玩家",
     "alive": "活",
     "dead": "死",
-    "manual": "/help 本手冊\n/now 現在遊戲狀態\n/all 當前所有玩家\n/char 當前擔任角色\n/werewolf 開始報名（如有遊戲則重新）"
+    "manual": "/help 本手冊\n/s 現在遊戲狀態\n/w 當前所有玩家\n/r 當前擔任角色\n/game 開始報名（如有遊戲則重新）"
   }
 }
 
@@ -171,6 +175,10 @@ vote = {}
 day = 1
 poison = 1
 medicine = 1
+vote_times = 0
+
+// 0: kill side, 1: clear people
+kill_mode = 0
 
 announcement = me(T("notBeg"))
 announce = (msg) => {
@@ -186,12 +194,14 @@ scene = (desc) => {
 }
 
 // 0 werewolf 1 villagers 2 seer 3 witch 4 hunter
+roles = []
 roleName = [T("werewolves"), T("villagers"), T("seer"), T("witch"), T("hunter")]
 rolesMap = {
-  5: [0, 1, 1, 2, 3],
-  6: [0, 0, 1, 1, 2, 3],
-  7: [0, 0, 1, 1, 1, 2, 3],
-  8: [0, 0, 1, 1, 1, 2, 3, 4],
+  5: [[0, 1, 1, 2, 3]],
+  6: [[0, 0, 1, 1, 2, 3], [0, 0, 1, 1, 2, 4]],
+  7: [[0, 0, 1, 1, 1, 2, 3], [0, 0, 1, 1, 1, 2, 4]],
+  8: [[0, 0, 1, 1, 1, 2, 3, 4], [0, 0, 0, 1, 1, 2, 3, 4]],
+  9: [[0, 0, 0, 1, 1, 1, 2, 3, 4]]
 }
 
 getRandom = (min,max) => {
@@ -221,12 +231,24 @@ most = (arr) => {
 }
 
 passJudge = () => {
-  wolf = filter(players, (p, index) => p.life && p.role == 0)
+  werewolves = filter(players, (p, index) => p.life && p.role == 0)
   people = filter(players, (p, index) => p.life && p.role != 0)
-  if wolf.length && people.length then -1
-  else if wolf.length then 0
-  else if people.length then 1
-  else 2
+  villagers = filter(players, (p, index) => p.life && p.role == 1)
+  gods = filter(players, (p, index) => p.life && p.role == 1)
+
+  if kill_mode
+  then { // clear
+    if werewolves.length && people.length then -1 // both alive
+    else if werewolves.length then 0 // werewolves alive
+    else if people.length then 1 // people alive
+    else 2 // both zero, draw
+  }
+  else { // kill side
+    if werewolves.length && gods.length && villagers then -1 // both alive
+    else if werewolves.length then 0 // werewolves alive
+    else if gods.length && villagers.length then 1 // people alive
+    else 2 // both zero, draw
+  }
 }
 
 state prepare {
@@ -237,6 +259,8 @@ state prepare {
   day = 1
   poison = 1
   medicine = 1
+  vote_times = 0
+  roles = []
 
   event [msg, me] (user, cont: "^\\+1$") => {
     if names.includes(user) then
@@ -253,16 +277,21 @@ state prepare {
     }
     else drrr.print(me(T("notIn")(user)))
   }
-  event [msg, me] (user, cont: "^/who$") => {
-    if names.length then {
-      drrr.print(T("players")(names.map((user, index) => String(index + 1) + ". " + user).join("\n")))
-    } else drrr.print(me(T("noPlayer")))
-  }
-  event [msg, me] (user, cont: "^/howl$") => {
+  event [msg, me] (user, cont: "^/go$") => {
     if names.length in rolesMap then going initial
-    else drrr.print(me(T("need5to8")(String(names.length))))
+    else drrr.print(me(T("configNotFit")(String(names.length))))
   }
-  sendTab({ fn: reload_room, args: { } })
+  event [msg, me] (user, cont: "^/\\?$") => {
+    drrr.print(T("setting"))
+  }
+  event [msg, me] (user, cont: "^/side$") => {
+    kill_mode = 0
+    drrr.print(me("ok, side mode"))
+  }
+  event [msg, me] (user, cont: "^/clear$") => {
+    kill_mode = 1
+    drrr.print(me("ok, clear mode"))
+  }
   announce(me(T("prepare")))
 }
 
@@ -291,22 +320,30 @@ state initial {
 }
 
 state prelude {
+
   drrr.print(T("players")(names.map((user, index) => String(index + 1) + ". " + user).join("\n")))
 
-  roles = rolesMap[names.length]
-  roles.sort(()=>Math.random() - 0.5)
+  comb = rolesMap[names.length]
+  roles = comb[Math.floor(Math.random() * comb.length)].slice();
 
-  names.forEach((name, index) => {
-    players[name] = newPlayer(name, roles[index]);
-  })
+  later 2000 {
 
-  wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
-  forEach(players, (p, index) => {
-    if p.role then later (index * 3500 + 1000) drrr.dm(p.name, T("UrRole")(p.rname))
-    else later (index * 3500 + 1000) drrr.dm(p.name, T("UrWerewolf")(wolves))
-  })
+    drrr.print(roles.map((r) => roleName[r]).join("\n"))
 
-  later names.length * 4000 going night
+    roles.sort(()=>Math.random() - 0.5)
+
+    names.forEach((name, index) => {
+      players[name] = newPlayer(name, roles[index]);
+    })
+
+    wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
+    forEach(players, (p, index) => {
+      if p.role then later (index * 3500 + 1000) drrr.dm(p.name, T("UrRole")(p.rname))
+      else later (index * 3500 + 1000) drrr.dm(p.name, T("UrWerewolf")(wolves))
+    })
+
+    later names.length * 4000 going night
+  }
 }
 
 state night {
@@ -342,7 +379,7 @@ state night_seer {
       } else drrr.print(me(T("beQuiet")(seer)))
     }
 
-    event msg (user: user.name, cont: "^/skip$") => going night_wolf
+    event [dm, msg] (user: user.name, cont: "^/skip$") => going night_wolf
 
   } else later (getRandom(10, 30) * 1500) going night_wolf
 }
@@ -380,13 +417,12 @@ state night_wolf {
     } else drrr.print(me(T("beQuiet")(wolf)))
   }
 
-  event msg (user: user.name, cont: "^/skip$") => going night_witch
+  event [dm, msg] (user: user.name, cont: "^/skip$") => going night_witch
 }
 
 state night_witch {
 
-  if !poison && !medicine
-  then going night_end
+  if !roles.includes(3) then going night_end
 
   announce(me(T("talkWitch")))
 
@@ -396,9 +432,13 @@ state night_witch {
 
     names.forEach((name, index) => {
       if players[name].role == 3 then {
-        later 3500 drrr.dm(name, T("victims")(victim.join(", ")))
+        if poison then
+          later 3500 drrr.dm(name, T("victims")(victim.join(", ")))
+        else
+          later 3500 drrr.dm(name, T("action"))
       }
     })
+
     event dm (witch, cont) => {
       if witch in players then {
         if players[witch].role == 3 then {
@@ -445,7 +485,7 @@ state night_witch {
       } else drrr.print(me(T("beQuiet")(witch)))
     }
 
-    event msg (user: user.name, cont: "^/skip$") => going night_end
+    event [me, msg] (user: user.name, cont: "^/skip$") => going night_end
 
   } else later (getRandom(10, 30) * 1000) going night_end
 }
@@ -459,6 +499,7 @@ state hunter_ask {
     if hunter in players then {
       if players[hunter].role == 4 then {
         show = 1
+        drrr.print(me(T("hunterShow")))
       }
     }
   }
@@ -474,7 +515,8 @@ state hunter_fire {
         if the then {
           if players[the].life then {
             players[the].life = false
-            drrr.print(T("hit")(the))
+            players[the].diefor = "shoot"
+            drrr.print(me(T("hit")(the)))
             setTimeout(() => drrr.alive(the, false), 1500)
             go_next()
           } else drrr.dm(user, T("deadMan"))
@@ -502,22 +544,26 @@ state night_end {
   later 3000 {
     if victim.length then {
 
-      victim.forEach((name, index) => {
-        setTimeout(() => drrr.alive(name, false), index * 1500)
-        if players[name].role == 4 && players[name].diefor == "bite"
-        then visit hunter_ask
-      })
+      announce(me(T("died")(victim.map((x)=>"@" + x).join(", "))))
 
-      later 5000 {
-        drrr.print(me(T("rip30s")))
-        later 30000 {
-          victim.forEach((name) => {
-            players[name].life = false;
-          })
+      later 2000 {
+        victim.forEach((name, index) => {
+          setTimeout(() => drrr.alive(name, false), index * 1500)
+          if players[name].role == 4 && players[name].diefor == "bite"
+          then visit hunter_ask
+        })
 
-          if show
-          then visit hunter_fire
-          else go_next()
+        later 5000 {
+          drrr.print(me(T("rip30s")))
+          later 30000 {
+            victim.forEach((name) => {
+              players[name].life = false;
+            })
+
+            if show
+            then visit hunter_fire
+            else go_next()
+          }
         }
       }
     } else {
@@ -545,9 +591,11 @@ state day_discussion {
 }
 
 state day_vote {
+
   announce(me(T("voting")))
   vote = {}
 
+  vote_times++
   survivor = filter(players, (p, idx) => p.life)
 
 
@@ -609,30 +657,45 @@ state day_execute {
   }
 
   louis = most(Object.values(vote).filter((x) => x != "no"))
-  announce(me(T("execute")(louis.map((x) => "@" + x).join(", "))))
 
-  louis.forEach((name) => {
-    if players[name].role == 4
-    then visit hunter_ask
-  })
+  if louis.length > 1 then {
+    if vote_times == 1 then {
+      announce(me(T("reVote")(louis.map((x) => "@" + x).join(", "))))
+      going day_vote
+    }
+    else {
+      vote_times = 0
+      announce(me(T("noExecute")(louis.map((x) => "@" + x).join(", "))))
+      go_next()
+    }
+  }
+  else {
+    vote_times = 0
+    announce(me(T("execute")(louis.map((x) => "@" + x).join(", "))))
+    louis.forEach((name) => {
+      if players[name].role == 4
+      then visit hunter_ask
+    })
 
-  later 3500 {
-    drrr.print(me(T("rip30s")))
-    later 30000 {
-      louis.forEach((name, index) => {
-        players[name].life = false;
-        players[name].diefor = "vote";
-        setTimeout(() => drrr.alive(name, false), index * 1500)
-      })
-      if show
-      then visit hunter_fire
-      else go_next()
+    louis.forEach((name, index) => {
+      players[name].life = false;
+      players[name].diefor = "vote";
+      setTimeout(() => drrr.alive(name, false), (index + 1) * 1500)
+    })
+
+    later ((louis.length + 2) * 1500) {
+      drrr.print(me(T("rip30s")))
+      later 30000 {
+        if show
+        then visit hunter_fire
+        else go_next()
+      }
     }
   }
 }
 
 state game_over {
-  cur_role = map(players, (p, idx) => p.name + ":" + p.rname).join("\n")
+  cur_role = map(players, (p, idx) => p.name + ":" + p.rname + " " + (if p.life then T("alive") else (T("dead") + " (" + p.diefor + ")"))).join("\n")
   result = passJudge()
   if result == 0
   then scene(me(T("werewolvesWin")))
@@ -650,7 +713,7 @@ wolfroom = (lang) => {
     roleName = [T("werewolves"), T("villagers"), T("seer"), T("witch"), T("hunter")]
   }
 
-  event [msg, me, dm] (user, cont: "^/char$") => {
+  event [msg, me, dm] (user, cont: "^/r$") => {
     if user in players then {
       wolves = filter(players, (p, index) => p.role == 0).map(p => p.name).join(", ")
       if players[user].role then drrr.dm(user, T("UrRole")(players[user].rname))
@@ -658,13 +721,15 @@ wolfroom = (lang) => {
     } else drrr.dm(user, T("notPlayer"))
   }
 
-  event [msg, me, dm] (user, cont: "^/all$") => {
+  event [msg, me, dm] (user, cont: "^/w$") => {
     if Object.keys(players).length
     then drrr.print(T("players")(map(players, (p, index) => String(index + 1) + ". " + p.name + " " + (if p.life then T("alive") else T("dead"))).join("\n")))
+    else if names.length then
+      drrr.print(T("players")(names.map((user, index) => String(index + 1) + ". " + user).join("\n")))
     else drrr.print(me(T("noPlayerBeg")))
   }
 
-  event [msg, me, dm] (user, cont: "^/now$") => {
+  event [msg, me, dm] (user, cont: "^/s$") => {
     drrr.print(announcement)
   }
 
@@ -672,11 +737,13 @@ wolfroom = (lang) => {
     drrr.print(T("manual"))
   }
 
-  event [msg, me] (user, cont: "^/werewolf$") => going prepare
+  event [msg, me] (user, cont: "^/game$") => going prepare
+
+  event [msg, me] (user, cont: "^/next$") => later 1500 drrr.print("/me/skip")
 
   event join (user) => drrr.player(user, false)
 
   going prepare
 }
 
-console.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" are available now")
+console.log("need call wolfroom(lang) to start it,\n\"zh\" and \"en\" are available now")
