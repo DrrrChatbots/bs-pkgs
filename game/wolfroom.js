@@ -262,6 +262,7 @@ state prepare {
     if names.length in rolesMap then going initial
     else drrr.print(me(T("need5to8")(String(names.length))))
   }
+  sendTab({ fn: reload_room, args: { } })
   announce(me(T("prepare")))
 }
 
@@ -501,8 +502,6 @@ state night_end {
   later 3000 {
     if victim.length then {
 
-      //announce(me(T("died")(victim.map((x)=>"@" + x).join(", "))))
-
       victim.forEach((name, index) => {
         setTimeout(() => drrr.alive(name, false), index * 1500)
         if players[name].role == 4 && players[name].diefor == "bite"
@@ -535,7 +534,7 @@ state day_discussion {
 
   event [msg, me] (u, cont) => {
     if (names[index] == u && cont.includes("over"))
-      || ((names.includes(u) || u == user.name) && cont.includes("/skip")) then {
+      || ((names.includes(u) || u == user.name) && cont.startsWith("/skip")) then {
       index++ // += bug?
       while (index < names.length) && (players[names[index]].life == 0) index++;
       if index >= names.length
