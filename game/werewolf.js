@@ -304,6 +304,7 @@ newPlayer = (name, role) => {
 }
 
 state prelude {
+
   drrr.print(T("players")(names.map((user, index) => String(index + 1) + ". " + user).join("\n")))
 
   comb = rolesMap[names.length]
@@ -582,7 +583,7 @@ state day_vote {
   later 1500 drrr.print(T("voteNote")(survivor.map((u) => "@" + u.name).join("\n")))
 
 
-  event [msg, me] (user, cont: "^/vote\\s+\\S+|^/execute") => {
+  event [msg, me, dm] (user, cont: "^/vote\\s+\\S+|^/execute") => {
     cont = cont.replace("/vote", "").trim()
     if user in players then {
       if players[user].life then {
@@ -702,7 +703,7 @@ werewolf = (lang) => {
 
   event [msg, me, dm] (user, cont: "^/w$") => {
     if Object.keys(players).length
-    then drrr.print(T("players")(map(players, (p, index) => String(index + 1) + ". " + p.name + " " + (if p.life then T("alive") else (T("dead") + "(" + p.diefor +")" ))).join("\n")))
+    then drrr.print(T("players")(map(players, (p, index) => String(index + 1) + ". " + p.name + " " + (if p.life then T("alive") else T("dead"))).join("\n")))
     else if names.length then
       drrr.print(T("players")(names.map((user, index) => String(index + 1) + ". " + user).join("\n")))
     else drrr.print(me(T("noPlayerBeg")))
