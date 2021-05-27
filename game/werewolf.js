@@ -201,12 +201,12 @@ scene = (desc) => {
 }
 
 setAlive = (name, state) => {
-  if room.gameRoom
+  if room.gameRoom && room.host == user.id
   then drrr.alive(name, state)
 }
 
 setPlayer = (name, state) => {
-  if room.gameRoom
+  if room.gameRoom && room.host == user.id
   then drrr.player(name, state)
 }
 
@@ -356,7 +356,7 @@ state prepare {
   event [msg, me] (user, cont: "^/go$") => {
     if (roles.length && names.length == roles.length)
       || (!roles.length && names.length in rolesMap) then {
-      if room.gameRoom then going initial
+      if room.gameRoom && room.host == user.id then going initial
       else going prelude
     }
     else drrr.print(me(T("configNotFit")(
