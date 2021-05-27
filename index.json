@@ -5,8 +5,7 @@
     ]},
     {"type":"directory","name":"game","contents":[
       {"type":"file","name":"guess_number.js"},
-      {"type":"file","name":"werewolf.js"},
-      {"type":"file","name":"wolfroom.js"}
+      {"type":"file","name":"werewolf.js"}
     ]},
     {"type":"file","name":"index.json"},
     {"type":"file","name":"push.sh"},
@@ -22,5 +21,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":5,"files":12}
+  {"type":"report","directories":5,"files":11}
 ]
