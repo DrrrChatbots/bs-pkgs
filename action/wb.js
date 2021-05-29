@@ -2,7 +2,7 @@
 // "join", "", "", "script", ["action/wb.js"]
 
 if !env.init then {
-	env.guests = users.map((x)=>x.name);
+	env.guests = drrr.users.map((x)=>x.name);
   env.init = true;
 }
 

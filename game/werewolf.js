@@ -195,18 +195,18 @@ announce = (msg) => {
 
 scene = (desc) => {
   announcement = desc
-  if room.host == user.id
+  if room.host == drrr.user.id
   then drrr.descr(desc.replace("/me", ""))
   else drrr.print(desc)
 }
 
 setAlive = (name, state) => {
-  if room.gameRoom && room.host == user.id
+  if room.gameRoom && room.host == drrr.user.id
   then drrr.alive(name, state)
 }
 
 setPlayer = (name, state) => {
-  if room.gameRoom && room.host == user.id
+  if room.gameRoom && room.host == drrr.user.id
   then drrr.player(name, state)
 }
 
@@ -420,9 +420,9 @@ newPlayer = (name, role) => {
 
 state initial {
   cnt = 1
-  updateLoc(()=>{
-    users.forEach((u, i) => {
-      isHost = u.name == user.name
+  drrr.getLoc(()=>{
+    drrr.users.forEach((u, i) => {
+      isHost = u.name == drrr.user.name
       if names.includes(u.name) != u.player || isHost
       then {
         setTimeout(() => setPlayer(u.name, !u.player || isHost), cnt++ * 1500)
@@ -1134,6 +1134,3 @@ werewolf = (lang) => {
 }
 
 console.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" are available now")
-
-//werewolf("zh");
-//werewolf("en");
