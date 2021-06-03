@@ -142,7 +142,7 @@ i18n = {
     "died": us => us + " 死了",
     "rip30s": "請大家默哀三十秒",
     "morningSafe": "天亮了，沒有人死",
-    "speaking": n => "請 @" + n + " 開始發言 ([over] 結尾), [/skip] 跳過此人, , [/expo name] 使用狼人自爆（白狼可帶走 name）",
+    "speaking": n => "請 @" + n + " 開始發言 ([over] 結尾), [/skip] 跳過此人, [/expo name] 使用狼人自爆（白狼可帶走 name）",
     "voting": "請開始投票（可私信）([/vote] 看已投票, [/urge] 催票, [/execute] 跳過投票, [/vote 人名] 或是 [/vote no] 棄票)",
     "voteNote": cans => "發言以投票，選項有：\n" + cans,
     "oneVote": "一人一票，落票無悔",
@@ -195,18 +195,18 @@ announce = (msg) => {
 
 scene = (desc) => {
   announcement = desc
-  if room.host == drrr.user.id
+  if drrr.room.host == drrr.user.id
   then drrr.descr(desc.replace("/me", ""))
   else drrr.print(desc)
 }
 
 setAlive = (name, state) => {
-  if room.gameRoom && room.host == drrr.user.id
+  if drrr.room.gameRoom && drrr.room.host == drrr.user.id
   then drrr.alive(name, state)
 }
 
 setPlayer = (name, state) => {
-  if room.gameRoom && room.host == drrr.user.id
+  if drrr.room.gameRoom && drrr.room.host == drrr.user.id
   then drrr.player(name, state)
 }
 
@@ -338,25 +338,25 @@ state prepare {
   roles = []
   protect = ""
 
-  event [msg, me] (user, cont: "^\\+1$") => {
-    if names.includes(user) then
-    drrr.print(me(T("joined")(user)))
+  event [msg, me] (user, cont: "^\\+1\\s*$") => {
+    if names.includes(user)
+    then drrr.print(me(T("joined")(user)))
     else{
       names.push(user)
       drrr.print(me(T("joins")(user)))
     }
   }
-  event [msg, me] (user, cont: "^-1$") => {
+  event [msg, me] (user, cont: "^-1\\s*$") => {
     if names.includes(user) then {
       names.splice(names.indexOf(user), 1);
       drrr.print(me(T("leaves")(user)))
     }
     else drrr.print(me(T("notIn")(user)))
   }
-  event [msg, me] (user, cont: "^/go$") => {
+  event [msg, me] (user, cont: "^/go\\s*$") => {
     if (roles.length && names.length == roles.length)
       || (!roles.length && names.length in rolesMap) then {
-      if room.gameRoom && room.host == user.id then going initial
+      if drrr.room.gameRoom && drrr.room.host == drrr.user.id then going initial
       else going prelude
     }
     else drrr.print(me(T("configNotFit")(
@@ -364,14 +364,14 @@ state prepare {
       String(names.length)
     )))
   }
-  event [msg, me] (user, cont: "^/\\?$") => {
+  event [msg, me] (user, cont: "^/\\?\\s*$") => {
     drrr.print(T("setting"))
   }
-  event [msg, me] (user, cont: "^/side$") => {
+  event [msg, me] (user, cont: "^/side\\s*$") => {
     kill_mode = 0
     drrr.print(me("ok, side mode"))
   }
-  event [msg, me] (user, cont: "^/clear$") => {
+  event [msg, me] (user, cont: "^/clear\\s*$") => {
     kill_mode = 1
     drrr.print(me("ok, clear mode"))
   }
@@ -505,7 +505,7 @@ state night_seer {
       } else drrr.print(me(T("beQuiet")(seer)))
     }
 
-    event [dm, msg] (user, cont: "^/skip$") => {
+    event [dm, msg] (user, cont: "^/skip\\s*$") => {
       if user in players then going night_guard
     }
 
@@ -554,7 +554,7 @@ state night_guard {
       } else drrr.print(me(T("beQuiet")(guard)))
     }
 
-    event [me, msg] (user, cont: "^/skip$") => {
+    event [me, msg] (user, cont: "^/skip\\s*$") => {
       if user in players then {
         protect = ""
         going night_wolf
@@ -601,7 +601,7 @@ state night_wolf {
     } else drrr.print(me(T("beQuiet")(wolf)))
   }
 
-  event [dm, msg] (user, cont: "^/skip$") => {
+  event [dm, msg] (user, cont: "^/skip\\s*$") => {
     if user in players then going night_witch
   }
 }
@@ -675,7 +675,7 @@ state night_witch {
       } else drrr.print(me(T("beQuiet")(witch)))
     }
 
-    event [me, msg] (user, cont: "^/skip$") => {
+    event [me, msg] (user, cont: "^/skip\\s*$") => {
       if user in players then going night_end
     }
 
@@ -795,11 +795,11 @@ state shooter_fire {
     }
   }
 
-  event [msg, me] (user, cont: "^/urge$") => {
+  event [msg, me] (user, cont: "^/urge\\s*$") => {
     drrr.print(me(T("urgeShoot")("@" + expo.join(", @"))))
   }
 
-  event [msg, me] (user, cont: "^/skip$") => {
+  event [msg, me] (user, cont: "^/skip\\s*$") => {
     if user in players then go_next()
   }
 }
@@ -917,11 +917,11 @@ state day_vote {
 
 
   later 1500 drrr.print(T("voteNote")(
-    survivor.filter(u => players[u].vote).map((u) => "@" + u.name).join("\n")))
+    survivor.filter(u => u.right).map((u) => "@" + u.name).join("\n")))
 
   lock = false
 
-  event [msg, me, dm] (user, cont: "^/vote\\s+\\S+|^/execute") => {
+  event [msg, me, dm] (user, cont: "^/vote\\s+\\S+|^/execute", url, tc, req) => {
     cont = cont.replace("/vote", "").trim()
     if user in players && !lock then {
       if players[user].right then {
@@ -935,9 +935,13 @@ state day_vote {
         else {
           the = select(cont, names)
           if the then {
-            if players[the].vote then {
+            if players[the].right then {
               vote[user] = the
-              drrr.print(T("checkVote")(the))
+
+              if req.type == "dm"
+              then drrr.dm(user, T("checkVote")(the))
+              else drrr.print(T("checkVote")(the))
+
               if Object.keys(vote).length == filter(players, p => p.right).length
               then {
                 lock = true
@@ -958,12 +962,12 @@ state day_vote {
       } else drrr.print(T("noRight"))
     } else drrr.print(me(T("beQuiet")(user)))
   }
-  event [msg, me, dm] (user, cont: "^/vote$", url, tc, req) => {
+  event [msg, me, dm] (user, cont: "^/vote\\s*$", url, tc, req) => {
     if req.type == "dm"
     then drrr.dm(user, me(T("curVote")(Object.keys(vote).join(", "))))
     else drrr.print(me(T("curVote")(Object.keys(vote).join(", "))))
   }
-  event [msg, me] (user, cont: "^/urge$") => {
+  event [msg, me] (user, cont: "^/urge\\s*$") => {
     drrr.print(me(T("urgeVote")(survivor.filter(u => !(u.name in vote) && u.right).map((u) => "@" + u.name).join(", "))))
   }
 }
@@ -1100,7 +1104,7 @@ werewolf = (lang) => {
     initRoleName()
   }
 
-  event [msg, me, dm] (user, cont: "^/r$") => {
+  event [msg, me, dm] (user, cont: "^/r\\s*$") => {
     if user in players then {
       wolves = filter(players, (p, index) => isWolf(p.role)).map(p => p.name).join(", ")
       if !isWolf(players[user].role) then drrr.dm(user, T("UrRole")(players[user].rname), players[user].rUrl)
@@ -1108,7 +1112,7 @@ werewolf = (lang) => {
     } else drrr.dm(user, T("notPlayer"))
   }
 
-  event [msg, me, dm] (user, cont: "^/w$") => {
+  event [msg, me, dm] (user, cont: "^/w\\s*$") => {
     if Object.keys(players).length
     then drrr.print(T("players")(map(players, (p, index) => String(index + 1) + ". " + p.name + " " + (if p.life then T("alive") else T("dead"))).join("\n")))
     else if names.length then
@@ -1116,19 +1120,19 @@ werewolf = (lang) => {
     else drrr.print(me(T("noPlayerBeg")))
   }
 
-  event [msg, me, dm] (user, cont: "^/s$") => {
+  event [msg, me, dm] (user, cont: "^/s\\s*$") => {
     drrr.print(announcement)
   }
 
-  event [msg, me, dm] (user, cont: "^/help$") => {
+  event [msg, me, dm] (user, cont: "^/help\\s*$") => {
     drrr.print(T("manual"))
   }
 
-  event [msg, me] (user, cont: "^/game$") => going prepare
+  event [msg, me] (user, cont: "^/game\\s*$") => going prepare
 
-  event [msg, me] (user, cont: "^/next$") => later 1500 drrr.print("/me/skip")
+  event [msg, me] (user, cont: "^/next\\s*$") => later 1500 drrr.print("/me/skip")
 
-  event join (user) => setPlayer(user, false)
+  event join (user) => setPlayer(user, user == drrr.user.name)
 
   going prepare
 }
