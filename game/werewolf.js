@@ -27,7 +27,7 @@ i18n = {
     "configNotFit": (lim, len) => "Need " + lim + " people, " + len + " people current.",
     "noPlayerBeg": "No player, please start the game",
     "prepare": "[+1] join [-1] out [/go] start [/?] other",
-    "setting": "[/side] side mode\n[/clear] clear mode\n[/config (...)] config with optional int array ([1, 2, 3])",
+    "setting": "[/side] side mode\n[/noside] clear mode\n[/self] witch can save self\n[/noself] witch cannot save self\n[/set (...)] set config with optional int array ([1, 2, 3])\n[/setup] show setup",
     "UrRole": r =>  "You are " + r,
     "UrWerewolf": (wv, wvs) => "You are " + wv + ", all werewolves are " + wvs,
     "night": d => "The " + String(d) + ord(d) + " day. Night, please close your eyes.",
@@ -83,7 +83,7 @@ i18n = {
     "notPlayer": "You are not player",
     "alive": "Alive",
     "dead": "Dead",
-    "manual": "/help The manual\n/s Game State\n/w All Players\n/r Your Role\n/game Start Participating (Will restart if game is running)"
+    "manual": "/help The manual\n/s Game State\n/w All Players\n/r Your Role\n/alive name [false] set alive\n/player name [false] set player\n/game Start Participating (Will restart if game is running)"
   },
   "zh": {
     "notBeg": "尚未開始遊戲",
@@ -107,7 +107,7 @@ i18n = {
     "configNotFit": (lim, len) => "需滿足 " + lim + " 人, 目前 " + len + " 人",
     "noPlayerBeg": "沒有玩家，請開始報名程序",
     "prepare": "[+1] 加入 [-1] 退出 [/go] 開始 [/?] 其他",
-    "setting": "[/side] 屠邊\n[/clear] 屠城\n[/config (...)] 角色配置([1, 2, 3])",
+    "setting": "[/side] 屠邊\n[/noside] 屠城\n[/self] 女巫自救\n[/noself] 女巫無法自救\n[/set (...)] 角色配置([1, 2, 3])\n[/setup] 顯示配置",
     "UrRole": r =>  "你的身份是：" + r,
     "UrWerewolf": (wv, wvs) => "你是" + wv + ", 所有狼是：" + wvs,
     "night": d => "第 " + String(d) + " 天，天黑請閉眼/夜",
@@ -162,7 +162,7 @@ i18n = {
     "notPlayer": "你不是玩家",
     "alive": "活",
     "dead": "死",
-    "manual": "/help 本手冊\n/s 現在遊戲狀態\n/w 當前所有玩家\n/r 當前擔任角色\n/game 開始報名（如有遊戲則重新）"
+    "manual": "/help 本手冊\n/s 現在遊戲狀態\n/w 當前所有玩家\n/r 當前擔任角色\n/alive name [false] 設定活死\n/player name [false] 設定玩家\n/game 開始報名（如有遊戲則重新）"
   }
 }
 
@@ -179,13 +179,12 @@ players = {}
 victim = []
 vote = {}
 day = 1
-poison = 1
-medicine = 1
 vote_times = 0
 protect = ""
 
 // 0: kill side, 1: clear people
 kill_mode = 0
+save_self = 0
 
 announcement = me(T("notBeg"))
 announce = (msg) => {
@@ -272,11 +271,14 @@ rolesMap = {
        [rWolf, rWolf, rWolf, rVill, rVill, rVill, rSeer, rWitc, rHunt, rIdio],
        [rWolf, rWolf, rWolf, rHunt, rHunt, rHunt, rHunt, rHunt, rHunt, rHunt]],
   11: [[rWolf, rWolf, rWolf, rVill, rVill, rVill, rVill, rVill, rWitc, rHunt, rGuar],
-       [rWolf, rWolf, rWolf, rVill, rVill, rVill, rVill, rWitc, rHunt, rGuar, rIdio]],
+       [rWolf, rWolf, rWolf, rVill, rVill, rVill, rVill, rWitc, rHunt, rGuar, rIdio],
+       [rWolf, rWolf, rWolf, rWitc, rWitc, rWitc, rWitc, rWitc, rWitc, rWitc, rWitc]],
   12: [[rWolf, rWolf, rWolf, rWolf, rVill, rVill, rVill, rVill, rSeer, rWitc, rHunt, rGuar],
        [rBing, rWolf, rWolf, rWolf, rVill, rVill, rVill, rVill, rSeer, rWitc, rHunt, rGuar],
        [rWing, rWolf, rWolf, rWolf, rVill, rVill, rVill, rVill, rSeer, rWitc, rHunt, rGuar],
-       [rWolf, rWolf, rWolf, rWolf, rVill, rVill, rVill, rVill, rSeer, rWitc, rHunt, rIdio]]
+       [rWolf, rWolf, rWolf, rWolf, rVill, rVill, rVill, rVill, rSeer, rWitc, rHunt, rIdio],
+       [rWolf, rWolf, rWolf, rWitc, rWitc, rWitc, rWitc, rWitc, rWitc, rWitc, rWitc,
+rWitc]]
 }
 
 getRandom = (min,max) => {
@@ -332,8 +334,6 @@ state prepare {
   players = {}
   vote = {}
   day = 1
-  poison = 1
-  medicine = 1
   vote_times = 0
   roles = []
   protect = ""
@@ -371,12 +371,20 @@ state prepare {
     kill_mode = 0
     drrr.print(me("ok, side mode"))
   }
-  event [msg, me] (user, cont: "^/clear\\s*$") => {
+  event [msg, me] (user, cont: "^/noside\\s*$") => {
     kill_mode = 1
     drrr.print(me("ok, clear mode"))
   }
-  event [msg, me] (user, cont: "^/config") => {
-    config = cont.replace("/config", "").trim()
+  event [msg, me] (user, cont: "^/self\\s*$") => {
+    save_self = 1
+    drrr.print(me("ok, witch can save self"))
+  }
+  event [msg, me] (user, cont: "^/noself\\s*$") => {
+    save_self = 0
+    drrr.print(me("ok, witch cannot save self"))
+  }
+  event [msg, me] (user, cont: "^/set\\b") => {
+    config = cont.replace("/set", "").trim()
     valid_roles = "valid roles:\n" +
           Object.keys(roleName).map(k => String(k) + ": " + roleName[k]).join("\n")
     if config then {
@@ -391,8 +399,8 @@ state prepare {
         drrr.print("at least one werewolf")
       else if rs.filter(r => r == rSeer).length > 1 then
         drrr.print("seer cannot be more than one")
-      else if rs.filter(r => r == rWitc).length > 1 then
-        drrr.print("witch cannot be more than one")
+      // else if rs.filter(r => r == rWitc).length > 1 then
+      //   drrr.print("witch cannot be more than one")
       else if !rs.filter(r => isWolf(r)).length then
         drrr.print("at least one werewolf")
       else {
@@ -405,17 +413,27 @@ state prepare {
       drrr.print(valid_roles + "\nok, random config")
     }
   }
+  event [msg, me] (user, cont: "^/setup\\s*") => {
+    rstr = (if !roles.length
+            then "random roles"
+            else roles.map((r) => roleName[r]).join("\n"))
+    rstr = rstr + "\nkill mode: " + (if kill_mode then "clear" else "side")
+    rstr = rstr + "\nsave self: " + (if save_self then "yes" else "no")
+    drrr.print(rstr)
+  }
   announce(me(T("prepare")))
 }
 
 newPlayer = (name, role) => {
   name: name,
-    life: true,
-    role: role,
-    rname: roleName[role],
-    rUrl: roleUrl[role],
-    diefor: "",
-    right: true
+  life: true,
+  role: role,
+  rname: roleName[role],
+  rUrl: roleUrl[role],
+  diefor: "",
+  right: true,
+  poison: role == rWitc,
+  medicine: role == rWitc,
 }
 
 state initial {
@@ -616,55 +634,76 @@ state night_witch {
 
   if filter(players, (p, idx) => p.role == theRole && p.life).length then {
 
-    used = 0
+    wait_list = []
+    med_counts = 0
+    poi_targets = {}
 
     names.forEach((name, index) => {
+      poi_targets[name] = 0
       if players[name].role == theRole then {
-        if poison then
-          later 3500 drrr.dm(name, T("victims")(victim.join(", ")))
+        players[name].used = false;
+        if players[name].poison then
+          later (1500 * (index + 1)) drrr.dm(name, T("victims")(victim.join(", ")))
         else
-          later 3500 drrr.dm(name, T("action"))
+          later (1500 * (index + 1)) drrr.dm(name, T("action"))
       }
     })
+
+    check_going = (name) => {
+      index = wait_list.indexOf(name);
+      if index >= 0 then wait_list.splice(index, 1);
+      if !wait_list.length
+      then {
+        if med_counts < 3 then victim = []
+        Object.keys(poi_targets).forEach(name => {
+          if poi_targets[name] % 2 then {
+            if !victim.includes(name)
+            then victim.push(name)
+            players[name].diefor = "poison"
+          }
+        })
+        later 3500 going night_end
+      }
+    }
 
     event dm (witch, cont) => {
       if witch in players then {
         if players[witch].role == theRole then {
           if players[witch].life then {
-            if !used then {
+            if !players[witch].used then {
               the = select(cont, names)
               if cont.startsWith("no") then {
-                used = 1
-                later 3500 going night_end
+                players[witch].used = true
+                check_going(witch)
               } else if cont.startsWith("ignore") then {
-                used = 1
-                later 3500 going night_end
+                players[witch].used = true
+                check_going(witch)
               } else if cont.includes("save") then {
-                if !medicine then {
+                if !players[witch].medicine then {
                   drrr.dm(witch, T("noMedicine"))
                 }
-                else if victim.length && victim[0] == witch then
+                else if ((!save_self || (save_self && day > 1))
+                  && victim.length && victim[0] == witch) then
                   drrr.dm(witch, T("can'tSaveSelf"))
                 else if victim.length && victim[0] == protect then {
-                  used = 1
-                  medicine = 0
-                  players[victim[0]].diefor = "poison"
+                  // medicine use on guard
+                  players[witch].used = true
+                  players[witch].medicine = false
+                  players[victim[0]].diefor = "medicine"
                 } else {
-                  victim = []
-                  used = 1
-                  medicine = 0
-                  later 3500 going night_end
+                  players[witch].used = true
+                  players[witch].medicine = false
+                  med_counts++
+                  check_going(witch)
                 }
               } else if cont.includes("poison") then {
                 if the.length then {
                   if players[the].life then{
-                    if poison then {
-                      if !victim.includes(the)
-                      then victim.push(the)
-                      players[the].diefor = "poison"
-                      used = 1
-                      poison = 0
-                      later 3500 going night_end
+                    if players[witch].poison then {
+                      poi_targets[the]++
+                      players[witch].used = true
+                      players[witch].poison = false
+                      check_going(witch)
                     } else drrr.dm(witch, T("noPoison"))
                   } else drrr.dm(user, T("deadMan"))
                 } else drrr.dm(user, T("noSuchPeople"))
@@ -830,35 +869,40 @@ state night_end {
         }
       }
 
-      announce(me(T("died")(victim.map((x)=>"@" + x).join(", "))))
+      if victim.length then{
+        announce(me(T("died")(victim.map((x)=>"@" + x).join(", "))))
+        later 2000 {
 
-      later 2000 {
+          exist_shooter = false
+          victim.forEach((name, index) => {
+            setTimeout(() => setAlive(name, false), index * 1500)
+            if isShooter(players[name].role) && players[name].diefor != "poison"
+            then exist_shooter = true
+          })
 
-        exist_shooter = false
-        victim.forEach((name, index) => {
-          setTimeout(() => setAlive(name, false), index * 1500)
-          if isShooter(players[name].role) && players[name].diefor != "poison"
-          then exist_shooter = true
-        })
+          if exist_shooter then {
+            dead = victim
+            visit shooter_ask
+          }
 
-        if exist_shooter then {
-          dead = victim
-          visit shooter_ask
-        }
+          later 5000 {
+            drrr.print(me(T("rip30s")))
+            later 30000 {
+              victim.forEach((name) => {
+                players[name].life = false
+                players[name].right = false
+              })
 
-        later 5000 {
-          drrr.print(me(T("rip30s")))
-          later 30000 {
-            victim.forEach((name) => {
-              players[name].life = false
-              players[name].right = false
-            })
-
-            if expo.length
-            then visit shooter_fire
-            else go_next()
+              if expo.length
+              then visit shooter_fire
+              else go_next()
+            }
           }
         }
+      }
+      else {
+        announce(me(T("morningSafe")))
+        later 3500 go_next()
       }
     } else {
       announce(me(T("morningSafe")))
@@ -951,7 +995,11 @@ state day_vote {
           }
           else if cont.startsWith("no") then {
             vote[user] = "no"
-            drrr.print(T("abstain"))
+
+            if req.type == "dm"
+            then drrr.dm(user, T("abstain"))
+            else drrr.print(T("abstain"))
+
             if Object.keys(vote).length == filter(players, p => p.right).length
             then {
               lock = true
@@ -1134,7 +1182,50 @@ werewolf = (lang) => {
 
   event join (user) => setPlayer(user, user == drrr.user.name)
 
+  event [msg, me] (user, cont: "^/alive") => {
+    if !names.length then drrr.print("/me start game first")
+    else setAlive(select(cont, names), !cont.includes("false"))
+  }
+
+  event [msg, me] (user, cont: "^/player") => {
+    if !names.length then drrr.print("/me start game first")
+    else setPlayer(select(cont, names), !cont.includes("false"))
+  }
+
   going prepare
 }
 
 console.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" are available now")
+
+/* new features wait to test */
+// /side
+// /noside
+// /self
+// /noself
+// /config => /set
+// /setup command
+// /alive
+// /player
+// multiple witches support
+
+/* commands
+ * +1
+ * /w
+ * /r
+ * /go
+ * /alive  [false]
+ * /player [false]
+ * /game
+ * /help
+ *
+ * /?
+ * /side
+ * /noside
+ * /self
+ * /noself
+ * /set    role array
+ * /setup
+ */
+
+// werewolf("zh");
+// werewolf("en");
