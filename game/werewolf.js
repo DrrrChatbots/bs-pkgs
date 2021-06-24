@@ -493,7 +493,7 @@ state night {
 
 state night_seer {
 
-  theRole = 2
+  theRole = rSeer
 
   if !roles.includes(theRole) then going night_guard
 
@@ -532,7 +532,7 @@ state night_seer {
 
 state night_guard {
 
-  theRole = 5
+  theRole = rGuar
 
   if !roles.includes(theRole) then going night_wolf
 
@@ -626,7 +626,7 @@ state night_wolf {
 
 state night_witch {
 
-  theRole = 3
+  theRole = rWitc
 
   if !roles.includes(theRole) then going night_end
 
@@ -640,6 +640,7 @@ state night_witch {
 
     names.forEach((name, index) => {
       poi_targets[name] = 0
+      wait_list.push(name)
       if players[name].role == theRole then {
         players[name].used = false;
         if players[name].poison then
