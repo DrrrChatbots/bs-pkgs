@@ -560,15 +560,15 @@ state night_guard {
                 later 3500 going night_wolf
               } else if the.length then {
                 if protect == the then
-                  drrr.dm(user, T("dupProtect"))
+                  drrr.dm(guard, T("dupProtect"))
                 else if players[the].life then{
                   protect = the
                   later 3500 going night_wolf
-                } else drrr.dm(user, T("deadMan"))
-              } else drrr.dm(user, T("noSuchPeople"))
-            } else drrr.dm(user, T("oneCmd"))
-          } else drrr.dm(user, T("deadRole")(T("guard")))
-        } else drrr.dm(user, T("notRole")(T("guard")))
+                } else drrr.dm(guard, T("deadMan"))
+              } else drrr.dm(guard, T("noSuchPeople"))
+            } else drrr.dm(guard, T("oneCmd"))
+          } else drrr.dm(guard, T("deadRole")(T("guard")))
+        } else drrr.dm(guard, T("notRole")(T("guard")))
       } else drrr.print(me(T("beQuiet")(guard)))
     }
 
@@ -614,8 +614,8 @@ state night_wolf {
             killed = 1
             later 3500 going night_witch
           }
-        } else drrr.dm(user, T("deadRole")(T("werewolf")))
-      } else drrr.dm(user, T("notRole")(T("werewolf")))
+        } else drrr.dm(wolf, T("deadRole")(T("werewolf")))
+      } else drrr.dm(wolf, T("notRole")(T("werewolf")))
     } else drrr.print(me(T("beQuiet")(wolf)))
   }
 
@@ -650,17 +650,19 @@ state night_witch {
       }
     })
 
-    check_going = (name) => {
-      index = wait_list.indexOf(name);
+    check_going = (witch) => {
+      index = wait_list.indexOf(witch);
       if index >= 0 then wait_list.splice(index, 1);
       if !wait_list.length
       then {
-        if med_counts < 3 then victim = []
+        if med_counts < 3 && med_counts > 0 then victim = []
         Object.keys(poi_targets).forEach(name => {
           if poi_targets[name] % 2 then {
             if !victim.includes(name)
-            then victim.push(name)
-            players[name].diefor = "poison"
+            then {
+              victim.push(name)
+              players[name].diefor = "poison"
+            }
           }
         })
         later 3500 going night_end
@@ -701,17 +703,18 @@ state night_witch {
                 if the.length then {
                   if players[the].life then{
                     if players[witch].poison then {
-                      poi_targets[the]++
+                      poi_targets[the] = poi_targets[the] + 1
                       players[witch].used = true
                       players[witch].poison = false
+                      drrr.dm(witch, "ok, poison " + the)
                       check_going(witch)
                     } else drrr.dm(witch, T("noPoison"))
-                  } else drrr.dm(user, T("deadMan"))
-                } else drrr.dm(user, T("noSuchPeople"))
-              } else drrr.dm(user, T("unkCmd"))
-            } else drrr.dm(user, T("oneCmd"))
-          } else drrr.dm(user, T("deadRole")(T("witch")))
-        } else drrr.dm(user, T("notRole")(T("witch")))
+                  } else drrr.dm(witch, T("deadMan"))
+                } else drrr.dm(witch, T("noSuchPeople"))
+              } else drrr.dm(witch, T("unkCmd"))
+            } else drrr.dm(witch, T("oneCmd"))
+          } else drrr.dm(witch, T("deadRole")(T("witch")))
+        } else drrr.dm(witch, T("notRole")(T("witch")))
       } else drrr.print(me(T("beQuiet")(witch)))
     }
 
@@ -829,8 +832,8 @@ state shooter_fire {
             if index >= 0 then expo.splice(index, 1);
             check();
 
-          } else drrr.dm(user, T("deadMan"))
-        } else drrr.dm(user, T("noSuchPeople"))
+          } else drrr.dm(hunter, T("deadMan"))
+        } else drrr.dm(hunter, T("noSuchPeople"))
       }
     }
   }
@@ -942,7 +945,7 @@ state day_discussion {
       }
     }
     else if (names[index] == u && cont.includes("over"))
-      || ((names.includes(u) || u == user.name) && cont.startsWith("/skip")) then {
+      || ((names.includes(u) || u == drrr.user.name) && cont.startsWith("/skip")) then {
       index++ // += bug?
       while (index < names.length) && (!players[names[index]].life) index++;
       if index >= names.length
