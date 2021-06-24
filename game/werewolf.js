@@ -640,8 +640,8 @@ state night_witch {
 
     names.forEach((name, index) => {
       poi_targets[name] = 0
-      wait_list.push(name)
       if players[name].role == theRole then {
+        wait_list.push(name)
         players[name].used = false;
         if players[name].poison then
           later (1500 * (index + 1)) drrr.dm(name, T("victims")(victim.join(", ")))
