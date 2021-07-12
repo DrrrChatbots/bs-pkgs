@@ -819,8 +819,8 @@ state shooter_fire {
             if isShooter(players[the].role) then {
               // send asking info
               j = passJudge()
-              if isWolf(players[the].role) && j == 0 then going game_over
-              if !isWolf(players[the].role) && j == 1 then going game_over
+              if (isWolf(players[the].role)) && (j == 1) then going game_over
+              if (!isWolf(players[the].role)) && (j == 0) then going game_over
 
               new_dead.push(players[the].name)
               new_count++
