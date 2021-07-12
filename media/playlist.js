@@ -76,7 +76,7 @@ fetch_list = id => {
   })
 }
 
-event [msg, me, dm] (user, cont: "^/list \\d+$") => {
+event [msg, me, dm] (user, cont: "^/list \\d+\\s*$") => {
   fetch_list(cont.split(" ")[1])
 }
 
@@ -92,13 +92,13 @@ event [msg, me, dm] (user, cont: "^/repeat\\s*$") => {
   play_repeat()
 }
 
-event [msg, me, dm] (user, cont: "^/del \\d+$") => {
+event [msg, me, dm] (user, cont: "^/del \\d+\\s*$") => {
   if playlists.length then
     playlists[0].splice(parseInt(cont.split(" ")[1]), 1);
   else drrr.print("no playlist now")
 }
 
-event [msg, me, dm] (user, cont: "^/dellist \\d+$") => {
+event [msg, me, dm] (user, cont: "^/dellist \\d+\\s*$") => {
   playlists.splice(parseInt(cont.split(" ")[1]), 1);
 }
 
