@@ -640,7 +640,7 @@ state night_witch {
 
     names.forEach((name, index) => {
       poi_targets[name] = 0
-      if players[name].role == theRole then {
+      if (players[name].role == theRole) && players[name].life then {
         wait_list.push(name)
         players[name].used = false;
         if players[name].poison then
@@ -719,7 +719,10 @@ state night_witch {
     }
 
     event [me, msg] (user, cont: "^/skip\\s*$") => {
-      if user in players then going night_end
+      if user in players then {
+        wait_list = []
+        check_going("")
+      }
     }
 
   } else later (getRandom(10, 30) * 1000) going night_end
