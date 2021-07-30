@@ -11,6 +11,7 @@
     {"type":"directory","name":"media","contents":[
       {"type":"file","name":"playlist.js"},
       {"type":"file","name":"r34.js"},
+      {"type":"file","name":"waifu.js"},
       {"type":"file","name":"yande.js"}
     ]},
     {"type":"file","name":"push.sh"},
@@ -27,5 +28,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":6,"files":15}
+  {"type":"report","directories":6,"files":16}
 ]
