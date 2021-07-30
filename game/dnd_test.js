@@ -3,6 +3,7 @@
 
 // from https://unnamed42.github.io/2016-06-30-%E5%AE%98%E6%96%B9%E7%89%88DnD%E9%98%B5%E8%90%A5%E6%B5%8B%E8%AF%95.html
 
+records = {}
 
 query = [{"chapter": "第一卷：對親戚的看法",
   "questions": [{"options": [{"infl": "xg",
@@ -527,8 +528,6 @@ alignments = {
 }
 
 
-score = false
-
 chunkString = (size, str) => {
   pos = 0; chunks = []
   while pos < str.length {
@@ -553,71 +552,39 @@ batch_print = msg => {
   msgs.forEach(m => drrr.print(m))
 }
 
-state start {
 
-  answers = []; ch = 0; qs = 0
-
-  prev_question = () => {
-    qs -= 1
-    if qs < 0
-    then { ch -= 1; qs = query[ch].questions.length - 1 }
-    if ch < 0
-    then { ch = 0; qs = 0; false }
-    else true
-  }
-
-  next_question = () => {
-    qs += 1
-    if qs >= query[ch].questions.length
-    then { ch += 1; qs = 0 }
-    if ch >= query.length
-    then false
-    else true
-  }
-
-  ask = () => {
-    if qs == 0 then drrr.print(query[ch].chapter)
-    text = query[ch].questions[qs].text + "\n"
-    text += query[ch].questions[qs].options.map(
-      (opt, index) => (index + 1) + ". " + opt.text).join("\n")
-    drrr.print(text)
-  }
-
-  ask()
-
-  event [me, msg] (user, cont: "^[1234]\\s*$") => {
-    ques = query[ch].questions[qs]
-    opt = parseInt(cont) - 1
-    val = parseInt(ques.options[opt]["value"])
-    answers.push([ques.options[opt]["infl"], val, opt])
-    if next_question()
-    then ask()
-    else {
-      score = { cx: 0, lx: 0, nx: 0, xe: 0, xg: 0, xn: 0 }
-      answers.forEach(ans => score[ans[0]] += ans[1])
-      going judge
-    }
-  }
-
-  event [me, msg] (user, cont: "^/back\\s*$") => {
-    if prev_question()
-    then answers.pop()
-    else drrr.print("no previous question!")
-    ask()
-  }
-
-  event [me, msg] (user, cont: "^/log\\s*$") => {
-    drrr.print(answers.map((ans, index) =>
-      String(index + 1) + ":" + (ans[2] + 1)).join(", "))
-  }
+prev_question = record => {
+  record.qs -= 1
+  if record.qs < 0
+  then { record.ch -= 1; record.qs = query[record.ch].questions.length - 1 }
+  if record.ch < 0
+  then { record.ch = 0; record.qs = 0; false }
+  else true
 }
 
-state judge {
+next_question = record => {
+  record.qs += 1
+  if record.qs >= query[record.ch].questions.length
+  then { record.ch += 1; record.qs = 0 }
+  if record.ch >= query.length
+  then false
+  else true
+}
+
+ask = record => {
+  if record.qs == 0 then drrr.dm(record.name, query[record.ch].chapter)
+  text = query[record.ch].questions[record.qs].text + "\n"
+  text += query[record.ch].questions[record.qs].options.map(
+    (opt, index) => (index + 1) + ". " + opt.text).join("\n")
+  drrr.dm(record.name, text)
+}
+
+judge = rec => {
   a = false; pos = false; t = ""; r = ""; e = false
   Object.keys(alignments).forEach(i => {
       r = i.charAt(0) + "x"
       t = "x" + i.charAt(1)
-      c = score[r] + score[t]
+      c = rec.score[r] + rec.score[t]
       alignments[i].value = c
       if c > a then { a = c; pos = i }
   })
@@ -625,15 +592,17 @@ state judge {
       if alignments[attr].value == a then r += 1
   })
   if r != 0 then {
-    pos = if score.lx > score.nx && score.lx > score.cx then "l"
-        else (if score.cx > score.nx && score.cx > score.lx then "c" else "n")
-    pos += if score.xg > score.xe && score.xg > score.xn then "g"
-        else (if score.xe > score.xn && score.xe > score.xg then "e" else "n")
+    pos = if rec.score.lx > rec.score.nx && rec.score.lx > rec.score.cx then "l"
+        else (if rec.score.cx > rec.score.nx && rec.score.cx > rec.score.lx
+                then "c" else "n")
+    pos += if rec.score.xg > rec.score.xe && rec.score.xg > rec.score.xn then "g"
+        else (if rec.score.xe > rec.score.xn && rec.score.xe > rec.score.xg
+                then "e" else "n")
   }
   posEntry = alignments[pos];
 
   attrDesc = (attr, val) =>
-    attr + " -- " + "X".repeat(Math.floor(val / 2)) + "(" + val + ")\n";
+    attr + "：" + "X".repeat(Math.floor(val / 4)) + "(" + val + ")\n";
 
   t = "#### 陣營傾向：\n"
   Object.keys(alignments).forEach(attrName => {
@@ -644,13 +613,13 @@ state judge {
 
   t = "### 詳細得分：\n"
   t += "#### 守序與混亂：\n"
-  t += attrDesc("守序", score.lx)
-  t += attrDesc("中立", score.nx)
-  t += attrDesc("混亂", score.cx)
+  t += attrDesc("守序", rec.score.lx)
+  t += attrDesc("中立", rec.score.nx)
+  t += attrDesc("混亂", rec.score.cx)
   t += "#### 善良與邪惡：\n";
-  t += attrDesc("善良", score.xg)
-  t += attrDesc("中立", score.xn)
-  t += attrDesc("邪惡", score.xe)
+  t += attrDesc("善良", rec.score.xg)
+  t += attrDesc("中立", rec.score.xn)
+  t += attrDesc("邪惡", rec.score.xe)
   drrr.print(t);
 
   t = "你的陣營是：" + posEntry.name + "\n";
@@ -659,13 +628,57 @@ state judge {
 }
 
 dnd_test = () => {
-  event [msg, me] (user, cont: "^/start\\s*$") => {
-    going start
+
+  event [msg, me, dm] (user, cont: "^/start\\s*$") => {
+    records[user] = {
+      name: user,
+      answers: [],
+      ch: 0, qs: 0,
+    }
+    ask(records[user])
   }
+
+  event [me, msg, dm] (user, cont: "^[1234]\\s*$") => {
+    if !(user in records) then drrr.dm(user, "/start first");
+    else{
+      record = records[user]
+      ques = query[record.ch].questions[record.qs]
+      opt = parseInt(cont) - 1
+      val = parseInt(ques.options[opt]["value"])
+      record.answers.push([ques.options[opt]["infl"], val, opt])
+      if next_question(record)
+      then ask(record)
+      else {
+        record.score = { cx: 0, lx: 0, nx: 0, xe: 0, xg: 0, xn: 0 }
+        record.answers.forEach(ans => record.score[ans[0]] += ans[1])
+        judge(record);
+      }
+    }
+  }
+
+  event [me, msg, dm] (user, cont: "^/back\\s*$") => {
+    if !(user in records) then drrr.dm(user, "/start first");
+    else{
+      record = records[user]
+      if prev_question(record)
+      then record.answers.pop()
+      else drrr.dm(user, "no previous question!")
+      ask(record)
+    }
+  }
+
+  event [me, msg, dm] (user, cont: "^/log\\s*$") => {
+    if !(user in records) then drrr.dm(user, "/start first");
+    else{
+      record = records[user]
+      drrr.dm(user, record.answers.map((ans, index) =>
+        String(index + 1) + ":" + (ans[2] + 1)).join(", "))
+    }
+  }
+
   event [msg, me, dm] (user, cont: "^/help\\s*$") => {
     drrr.print("1 2 3 4 擇一答題\n/start 重新開始\n/back 上一題\n/log 答題紀錄")
   }
-  going start
 }
 
 // dnd_test();

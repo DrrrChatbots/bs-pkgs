@@ -5,6 +5,7 @@
     {"type":"directory","name":"game","contents":[
       {"type":"file","name":"dnd_test.js"},
       {"type":"file","name":"guess_number.js"},
+      {"type":"file","name":"infer_number.js"},
       {"type":"file","name":"werewolf.js"}
     ]},
     {"type":"file","name":"index.json"},
@@ -28,5 +29,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":6,"files":16}
+  {"type":"report","directories":6,"files":17}
 ]
