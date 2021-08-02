@@ -30,7 +30,7 @@ theNumber = "1234"
 guess_number = () => {
   theNumber = generate()
   event msg (user, cont: "^\\d\\d\\d\\d$") => gnjdg(cont, drrr.print)
-  event msg (user, cont: "^new$") => { theNumber = generate(); drrr.print("number set"); }
+  event msg (user, cont: "^/start$") =>
+  { theNumber = generate(); drrr.print("number set"); }
   event msg (user, cont: "^ans$") => drrr.print(theNumber)
 }
-

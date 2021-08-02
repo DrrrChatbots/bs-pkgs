@@ -31,19 +31,20 @@ enums = (idx , cur) => {
 
 infer = (answers, cont, makeGuess) => {
   ask = cont.split(":")[0]
-  feedback = cont.split(":")[1]
+  feedback = cont.split(":")[1].trim()
   answers.filter(a => judge(ask, a, feedback))
 }
 
 infer_number = () => {
   answers = []
-  event msg (user, cont: "^\\d\\d\\d\\d:\\dA\\dB$") => {
+  event msg (user, cont: "^\\d\\d\\d\\d:\\s*\\dA\\dB$") => {
+    if !answers.length then answers = enums()
     answers = infer(answers, cont); drrr.print(answers[0])
   }
-  event msg (user, cont: "^number set$") => {
+  event msg (user, cont: "number set") => {
     answers = enums(); drrr.print(answers[0])
   }
-  event msg (user, cont: "^Your Number is Correct$") => {
-    answers = enums(); drrr.print("new")
+  event msg (user, cont: "Correct") => {
+    answers = enums(); drrr.print("/start")
   }
 }
