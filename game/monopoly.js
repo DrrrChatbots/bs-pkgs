@@ -1,8 +1,9 @@
+// issue, need clear houses before tx
+
 curIndex = 0
 players = {}
 playerNames = []
-restHouses = 32
-restHotels = 12
+restBldg = [32, 12]
 txIndex = 0
 txContracts = {}
 
@@ -113,8 +114,6 @@ cards = {
   ]
 }
 
-mortgage = est => est.price / 2;
-
 randomInt = (min, max) => Math.floor(Math.random()*(max-min+1))+min;
 
 draw = (name, player) => {
@@ -129,37 +128,46 @@ goJail = player => {
 }
 
 payEstate = (this, player) => {
-  rent = this.rent[this.owner.ests[this.name]];
-  player.money -= rent;
-  this.owner.money += rent;
-  drrr.print("@" + player.name + "支付租金 "
-    + String(rent) + " 給 @" + this.owner.name);
-  going nextRound;
-}
-
-payPublic = (this, player) => {
-  count = Object.keys(this.owner.ests).filter(n => "水電".includes(n.icon)).length
-  event [me, msg] (name: specify(player.name), cont: "\\.r") => {
-    rent = 0;
-    a = randomInt(1, 6)
-    b = randomInt(1, 6)
-    drrr.print("(" + String(a) + ", " + String(b) + ")");
-    rent = (a + b) * this.rent[count]
+  if this.mort then drrr.print(this.name + " 抵押中")
+  else{
+    rent = this.rent[this.owner.ests[this.name]];
     player.money -= rent;
     this.owner.money += rent;
     drrr.print("@" + player.name + "支付租金 "
       + String(rent) + " 給 @" + this.owner.name);
-    going nextRound;
   }
+  going nextRound;
+}
+
+payPublic = (this, player) => {
+  if this.mort then drrr.print(this.name + " 抵押中")
+  else {
+    count = Object.keys(this.owner.ests).filter(n => "水電".includes(n.icon)).length
+    event [me, msg] (name: specify(player.name), cont: "\\.r") => {
+      rent = 0;
+      a = randomInt(1, 6)
+      b = randomInt(1, 6)
+      drrr.print("(" + String(a) + ", " + String(b) + ")");
+      rent = (a + b) * this.rent[count]
+      player.money -= rent;
+      this.owner.money += rent;
+      drrr.print("@" + player.name + "支付租金 "
+        + String(rent) + " 給 @" + this.owner.name);
+    }
+  }
+  going nextRound;
 }
 
 payStation = (this, player) => {
-  count = Object.keys(this.owner.ests).filter(n => n.includes("車站")).length
-  rent = this.rent[count];
-  player.money -= rent;
-  this.owner.money += rent;
-  drrr.print("@" + player.name + "支付租金 "
-    + String(rent) + " 給 @" + this.owner.name);
+  if this.mort then drrr.print(this.name + " 抵押中")
+  else {
+    count = Object.keys(this.owner.ests).filter(n => n.includes("車站")).length
+    rent = this.rent[count];
+    player.money -= rent;
+    this.owner.money += rent;
+    drrr.print("@" + player.name + "支付租金 "
+      + String(rent) + " 給 @" + this.owner.name);
+  }
   going nextRound;
 }
 
@@ -211,22 +219,29 @@ onEstate = (this, player) => {
   }
 }
 
+series = est => map.filter(e => e.color == est.color)
+hasHouse = est => series(est)
+    .map(e => player.ests[e.name] || 0)
+    .reduce((a, b) => a + b)
 
 Estate = (icon, color, name, price, rent, build) => {
   icon: icon, color: color, name: name,
   price: price, rent: rent, build: build,
-  owner: false, pay: payEstate, action: onEstate
+  mort: false, owner: false,
+  pay: payEstate, action: onEstate
 }
 
 Public = (icon, name, price, rent) => {
   icon: icon, name: name,
   price: price, rent: rent,
+  mort: false, owner: false,
   pay: payPublic, action: onEstate
 }
 
 Station = (icon, name, price, rent) => {
   icon: icon, name: name,
   price: price, rent: rent,
+  mort: false, owner: false,
   pay: payStation, action: onEstate
 }
 
@@ -349,7 +364,13 @@ state nextRound {
   player = players[playerNames[curIndex]]
   showPlayer(player)
   if player.money < 0 then { drrr.print(player.name + " 破產") }
-  // TODO Bankruptcy
+  // TODO check if Bankruptcy, do mortgage
+  // ests = Object.keys(player.ests)
+  // ests.forEach(k => {
+  //   restBldg[0] += ests[c] % 5;
+  //   restBldg[1] += Math.floor(ests[c] / 5);
+  // })
+  // map.forEach(e => if ests.includes(e.name) then e.owner = false )
   curIndex = (curIndex + 1) % playerNames.length;
   going Round
 }
@@ -382,19 +403,29 @@ parseAssets = str => {
   asset
 }
 
-checkAsset = (usr, ast) => {
+enough = (usr, ast) => {
   usr.money > (ast.money || 0)
     && usr.lics > (ast.lics || 0)
-    && ast.ests.every(e => usr.ests[e])
+    && ast.ests.every(e => e in usr.ests)
+}
+
+lack = (usr, ast) => {
+  if enough(usr, ast) then false
+  else usr.name + " doesn't has enough asset"
+}
+
+haveHouse = (usr, ast) => {
+  if ast.ests.map(est => map.find(e => e.name == est)).some(hasHouse)
+  then "all estate need all be space" else false
 }
 
 fullfill = contr => {
-  if !checkAsset(contr.A, contr.astA) then {
-    drrr.print(contr.A.name + " doesn't has enough asset")
-    delete txContracts[contr.id]
-  }
-  else if !checkAsset(contr.B, contr.astB) then {
-    drrr.print(contr.B.name + " doesn't has enough asset")
+  error = lack(contr.A, contr.astA) ||
+          lack(contr.B, contr.astB) ||
+          haveHouse(contr.A, contr.astA) ||
+          haveHouse(contr.B, contr.astB)
+  if error then {
+    drrr.print(error)
     delete txContracts[contr.id]
   }
   else {
@@ -411,6 +442,16 @@ fullfill = contr => {
   }
 }
 
+withUsrEst = (usrName, estName) => {
+  player = assocPlayer(usrName)
+  if !player then
+  { drrr.print("Not player"); false }
+  else if !(estName in player.est) then
+  { drrr.print("No such estate"); false }
+  else [player, map.find(a => a.name == estName)]
+}
+
+
 monopoly = () => {
   drrr.print("monopoly rock'n roll");
   running = false;
@@ -424,8 +465,8 @@ monopoly = () => {
     }
   }
   event [msg, me] (name, cont: "^.go\\s*$") => {
-    if running then drrr.print("game is running");
-    else if !playerNames.length then drrr.print("no user now")
+    if running then drrr.print("Game is running");
+    else if !playerNames.length then drrr.print("No user now")
     else { running = true; going Round; }
   }
   event [msg, me] (name, cont: "^.map\\s*$") => {
@@ -434,7 +475,7 @@ monopoly = () => {
   event [msg, me] (name, cont: "^.asset\\s*$") => {
     if playerNames.includes(name)
     then showPlayer(name)
-    else drrr.print("not in game")
+    else drrr.print("Not in game")
   }
   event [msg, me] (name, cont: "^\\.tx.*for.*") => {
     parts = cont.substr(3).split("for")
@@ -448,6 +489,7 @@ monopoly = () => {
       drrr.print(TxDetail(contr.A, contr.astA))
       drrr.print(TxDetail(contr.B, contr.astB))
     }
+    else drrr.print("Invalid tx users")
   }
   event [msg, me] (name, cont: "^\\.acc\\s*\\d+$") => {
     id = cont.replace(".acc", "")
@@ -457,9 +499,74 @@ monopoly = () => {
     then drrr.print("#" + id + " should be assigned by " + txContracts[id].B.name)
     else fullfill(txContracts[id])
   }
-  // TODO build, destory house, consider hotel limit
+  event [msg, me] (name, cont: "^\\.build.*$") => {
+    usrEst = withUsrEst(name, cont.replace(".build").trim())
+    if usrEst then {
+      player = usr[0]; est = usr[1]
+      if !est.build then drrr.print("Cannot build")
+      else if player.ests[est.name] > 4 then drrr.print("Top level")
+      else if player.money < est.build then drrr.print("No enough money")
+      else {
+        houses = series(est).map(e => player.ests[e.name] || 0)
+        //min = Math.min.apply(Math, houses);
+        if series(est).some(e => e.mort)
+        then drrr.print("Exist mortgaged series");
+        else if min != player.ests[est.name]
+        then drrr.print("Need build from lowest estate");
+        else {
+          type = Number((player.ests[est.name] + 1 == 5))
+          if restBldg[type] then {
+            player.ests[est.name] += 1
+            player.money -= est.build
+            restBldg[type] -= 1
+          }
+          else drrr.print("No enough hotel/house")
+        }
+      }
+    }
+  }
+  event [msg, me] (name, cont: "^\\.destory.*$") => {
+    usrEst = withUsrEst(name, cont.replace(".destory").trim())
+    if usrEst then {
+      player = usr[0]; est = usr[1]
+      if !est.build then drrr.print("Cannot destory")
+      else if player.ests[est.name] == 0 then drrr.print("Bottom level")
+      else {
+        houses = series(est).map(e => player.ests[e.name] || 0)
+        //max = Math.max.apply(Math, houses);
+        if max != player.ests[est.name]
+        then drrr.print("Need destory from highest estate");
+        else {
+          type = Number((player.ests[est.name] == 5))
+          player.ests[est.name] -= 1
+          player.money += est.build
+          restBldg[type] += 1
+        }
+      }
+    }
+  }
   // TODO auction house
-  // TODO mortgage related
+  event [msg, me] (name, cont: "^\\.mort.*$") => {
+    usrEst = withUsrEst(name, cont.replace(".mort").trim())
+    if usrEst then {
+      player = usr[0]; est = usr[1]
+      est = map.find(a => a.name == an)
+      houses = series(est)
+                .map(e => player.ests[e.name] || 0)
+                .reduce((a, b) => a + b)
+      if houses then drrr.print("Need destory all buildings first")
+      else if est.mort then drrr.print("Has been mortgaged")
+      else { est.mort = true; player.money += est.price / 2; }
+    }
+  }
+  event [msg, me] (name, cont: "^\\.trom.*$") => {
+    usrEst = withUsrEst(name, cont.replace(".trom").trim())
+    if usrEst then {
+      player = usr[0]; est = usr[1]
+      if player.money >= est.price / 2 then
+      { est.mort = false; player.money += est.price / 2; }
+    }
+  }
 }
 
 bkg_main = (name, room, main) => {
@@ -471,7 +578,7 @@ bkg_main = (name, room, main) => {
   next = cookie => {
     if cookie then localStorage.setItem("cookie", cookie);
     if room == "roomID"
-    then print("set your roomID");
+    then print("Set your roomID");
     else drrr.join(room, main);
   }
   if drrr.cookie then drrr.getProfile(() => next());
