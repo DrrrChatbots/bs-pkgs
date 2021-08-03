@@ -6,6 +6,7 @@ playerNames = []
 restBldg = [32, 12]
 txIndex = 0
 txContracts = {}
+// TODO pay function, bank
 
 newPlayer = name => {
   name: name, money: 10500,
@@ -352,27 +353,42 @@ toss_go = player => {
       // TODO show map
       if map[loc].action
       then map[loc].action(map[loc], player);
-      else {
-        drrr.print("no action, next")
-        going nextRound;
-      }
+      else { drrr.print("no action, next"); going nextRound; }
     }
   }
+}
+
+bankrupts = player => {
+  drrr.print("@" + player.name + "破產")
+  ests = Object.keys(player.ests)
+  ests.forEach(k => {
+    restBldg[0] += ests[c] % 5;
+    restBldg[1] += Math.floor(ests[c] / 5);
+  })
+  map.forEach(e => if ests.includes(e.name) then e.owner = false )
 }
 
 state nextRound {
   player = players[playerNames[curIndex]]
   showPlayer(player)
-  if player.money < 0 then { drrr.print(player.name + " 破產") }
-  // TODO check if Bankruptcy, do mortgage
-  // ests = Object.keys(player.ests)
-  // ests.forEach(k => {
-  //   restBldg[0] += ests[c] % 5;
-  //   restBldg[1] += Math.floor(ests[c] / 5);
-  // })
-  // map.forEach(e => if ests.includes(e.name) then e.owner = false )
-  curIndex = (curIndex + 1) % playerNames.length;
-  going Round
+  if player.money <= 0 then {
+    drrr.print(player.name + " 瀕臨破產，須調整現金 > 0，完成調整 .d")
+    event [msg, me] (name, cont: "^.d\\s*$") => {
+      if player.money >= 0 then
+        curIndex = (curIndex + 1) % playerNames.length;
+      else {
+        bankrupts(player);
+        delete players[player.name]
+        playerNames.splice(curIndex, 1);
+        curIndex = (curIndex - playerNames.length) && curIndex
+      }
+      going Round
+    }
+  }
+  else{
+    curIndex = (curIndex + 1) % playerNames.length;
+    going Round
+  }
 }
 
 state Round {
@@ -508,7 +524,7 @@ monopoly = () => {
       else if player.money < est.build then drrr.print("No enough money")
       else {
         houses = series(est).map(e => player.ests[e.name] || 0)
-        //min = Math.min.apply(Math, houses);
+        min = Math.min.apply(Math, houses);
         if series(est).some(e => e.mort)
         then drrr.print("Exist mortgaged series");
         else if min != player.ests[est.name]
@@ -533,7 +549,7 @@ monopoly = () => {
       else if player.ests[est.name] == 0 then drrr.print("Bottom level")
       else {
         houses = series(est).map(e => player.ests[e.name] || 0)
-        //max = Math.max.apply(Math, houses);
+        max = Math.max.apply(Math, houses);
         if max != player.ests[est.name]
         then drrr.print("Need destory from highest estate");
         else {
