@@ -6,12 +6,15 @@
       {"type":"file","name":"dnd_test.js"},
       {"type":"file","name":"guess_number.js"},
       {"type":"file","name":"infer_number.js"},
+      {"type":"file","name":"monopoly.js"},
+      {"type":"file","name":"monopoly.md"},
       {"type":"file","name":"werewolf.js"}
     ]},
     {"type":"file","name":"index.json"},
     {"type":"directory","name":"media","contents":[
       {"type":"file","name":"playlist.js"},
       {"type":"file","name":"r34.js"},
+      {"type":"file","name":"tracemoe.js"},
       {"type":"file","name":"waifu.js"},
       {"type":"file","name":"yande.js"}
     ]},
@@ -29,5 +32,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":6,"files":17}
+  {"type":"report","directories":6,"files":20}
 ]
