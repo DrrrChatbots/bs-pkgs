@@ -26,7 +26,7 @@ showUsers = show => {
     then "banker" else p.wager) + "]").join("\n"))
 }
 
-event [msg, me] (name, cont: "^\\.s\\s*$") => {
+event [msg, me] (name, cont: "^\\.d\\s*$") => {
   if banker && banker.name == name then {
     deck = []
     [0, 1, 2, 3].forEach(s => {
@@ -202,19 +202,19 @@ event [msg, me] (name, cont: "^\\.w\\s*\\d+$") => {
 
 event [msg, me] (name, cont: "^\\.p\\s*$") => { showUsers(false) }
 
-event [msg, me] (name, cont: "^\\.h|help") => {
+event [msg, me] (name, cont: "^(\\.h|help)\\s*$") => {
   drrr.print(
     [ ".j join"
     , ".q quit"
-    , ".s shuffle and deal cards"
+    , ".d deal cards"
     , ".b be banker"
-    , ".i show info"
+    , ".i info"
     , ".1 new card"
     , ".e end round"
-    , ".k [name] remove user"
-    , ".w [number] set the wager"
+    , ".k [name] kick user"
+    , ".w [number] set wager"
     , ".p players"
-    , ".h the manual"
+    , ".h help"
     ].join("\n")
   )
 }
