@@ -1,3 +1,4 @@
+// https://www.itsfun.com.tw/%E5%8D%81%E9%BB%9E%E5%8D%8A/wiki-2561012
 
 deck = []
 players = {}
@@ -6,7 +7,7 @@ banker = false
 
 newPlayer = (name) => {
   name: name, money: 150,
-  cards: [], end: false, wager: 10,
+  cards: [], end: true, wager: 10,
 }
 
 toCard = card => suits[card[0]] +
@@ -24,6 +25,17 @@ showUsers = show => {
     (if show then p.points else "") + " [" +
     (if banker.name == p.name
     then "banker" else p.wager) + "]").join("\n"))
+}
+
+showHand = (cards, first) => (if first
+  then cards.map(c =>
+  "[" + toCard(c) + "]").join("")
+  else "[=]" + cards.slice(1).map(c =>
+  "[" + toCard(c) + "]").join(""))
+
+showCards = () => {
+  drrr.print(Object.values(players).map(p =>
+    p.name + ": " + showHand(p.cards, false)).join("\n"))
 }
 
 event [msg, me] (name, cont: "^\\.d\\s*$") => {
@@ -72,8 +84,9 @@ event [msg, me] (name, cont: "^\\.1\\s*$") => {
     if status.length then player.points = status
     else player.points = " (" + player.points / 10 + ")"
 
-    text = "[=]" + player.cards.slice(1).map(c =>
-      "[" + toCard(c) + "]").join("") + status
+    text = showHand(player.cards,
+      player.name == banker.name) + status
+
     drrr.print(text)
 
     if busted || passed then {
@@ -82,8 +95,8 @@ event [msg, me] (name, cont: "^\\.1\\s*$") => {
 
       settle = (me, opponent, endon) => {
         lose = busted * 2 - 1
-        me.money -= lose * player.wager
-        opponent.money += lose * player.wager
+        me.money -= lose * endon.wager
+        opponent.money += lose * endon.wager
         endon.cards = []
         endon.end = true
       }
@@ -94,8 +107,9 @@ event [msg, me] (name, cont: "^\\.1\\s*$") => {
           .forEach(player => settle(banker, player, player))
       }
       else settle(player, banker, player)
-      if !Object.values(players)
-        .some(p => p.name != banker.name && !p.end)
+
+      if !(Object.values(players)
+        .some(p => p.name != banker.name && p.cards.length))
       then {
         banker.cards = []
         banker.end = true
@@ -116,7 +130,7 @@ event [msg, me] (name, cont: "^\\.e\\s*$") => {
       Object.values(players)
         .filter(p => p.name != name && p.cards.length)
         .forEach(player => {
-          win = points > calculate(player.cards)
+          win = points >= calculate(player.cards)
           if busted then win = false
           else if passed then win = true
           win = win * 2 - 1
@@ -129,7 +143,10 @@ event [msg, me] (name, cont: "^\\.e\\s*$") => {
       banker.end = true
       showUsers(true)
     }
-    else player.end = true;
+    else {
+      player.end = true
+      drrr.print("@" + player.name + " end round")
+    }
   }
 }
 
@@ -201,19 +218,19 @@ event [msg, me] (name, cont: "^\\.w\\s*\\d+$") => {
 }
 
 event [msg, me] (name, cont: "^\\.p\\s*$") => { showUsers(false) }
+event [msg, me] (name, cont: "^\\.c\\s*$") => { showCards() }
 
 event [msg, me] (name, cont: "^(\\.h|help)\\s*$") => {
   drrr.print(
-    [ ".j join"
-    , ".q quit"
+    [ ".j join /.q quit"
     , ".d deal cards"
     , ".b be banker"
     , ".i info"
     , ".1 new card"
     , ".e end round"
-    , ".k [name] kick user"
-    , ".w [number] set wager"
-    , ".p players"
+    , ".k [str] kick"
+    , ".w [num] set wager"
+    , ".p players /.c cards"
     , ".h help"
     ].join("\n")
   )
