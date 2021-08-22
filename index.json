@@ -3,6 +3,8 @@
       {"type":"file","name":"wb.js"}
     ]},
     {"type":"directory","name":"game","contents":[
+      {"type":"file","name":"10p5.js"},
+      {"type":"file","name":"dice.js"},
       {"type":"file","name":"dnd_test.js"},
       {"type":"file","name":"guess_number.js"},
       {"type":"file","name":"infer_number.js"},
@@ -32,5 +34,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":6,"files":20}
+  {"type":"report","directories":6,"files":22}
 ]
