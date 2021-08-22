@@ -7,7 +7,8 @@ dice = (text) => {
   else {
     ins = Number(match[1])
     if(ins > 0 && ins <= 100)
-    then Array.from(Array(ins)).map((_, i) => String(Math.floor(Math.random()*match[2])+1)).join(" ");
+    then Array.from(Array(ins)).map((_, i) =>
+      String(Math.floor(Math.random()*match[2])+1)).join(" ");
     else "number of dice should between 1 to 100";
   }
 }
