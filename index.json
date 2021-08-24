@@ -1,5 +1,6 @@
 [{"type":"directory","name": ".","contents":[
     {"type":"directory","name":"action","contents":[
+      {"type":"file","name":"clear_history.js"},
       {"type":"file","name":"wb.js"}
     ]},
     {"type":"directory","name":"game","contents":[
@@ -10,7 +11,11 @@
       {"type":"file","name":"infer_number.js"},
       {"type":"file","name":"monopoly.js"},
       {"type":"file","name":"monopoly.md"},
+      {"type":"file","name":"spy.js"},
       {"type":"file","name":"werewolf.js"}
+    ]},
+    {"type":"directory","name":"ignore","contents":[
+      {"type":"file","name":"tg_proxy.js"}
     ]},
     {"type":"file","name":"index.json"},
     {"type":"directory","name":"media","contents":[
@@ -34,5 +39,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":6,"files":22}
+  {"type":"report","directories":7,"files":25}
 ]
