@@ -32,6 +32,7 @@
     ]},
     {"type":"directory","name":"utility","contents":[
       {"type":"file","name":"bkg_main.js"},
+      {"type":"file","name":"download.js"},
       {"type":"file","name":"hook.js"},
       {"type":"file","name":"wb.js"}
     ]},
@@ -39,5 +40,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":7,"files":25}
+  {"type":"report","directories":7,"files":26}
 ]
