@@ -14,6 +14,7 @@
       {"type":"file","name":"werewolf.js"}
     ]},
     {"type":"file","name":"index.json"},
+    {"type":"file","name":"LICENSE"},
     {"type":"directory","name":"media","contents":[
       {"type":"file","name":"bgm.js"},
       {"type":"file","name":"playlist.js"},
@@ -37,5 +38,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":6,"files":25}
+  {"type":"report","directories":6,"files":26}
 ]
