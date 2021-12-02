@@ -14,11 +14,6 @@ event join (name, cont, url, tc) => {
   if link then playMusic(name + "'s bgm!", link)
 }
 
-event music (name, cont: "bgm", url, tc) => {
-  if tc then bgmBook("#" + tc, url)
-  else bgmBook(name, url)
-}
-
 event msg (name, cont: "/mybgm", url, tc) => {
   if url then {
     if tc then bgmBook("#" + tc, url)
