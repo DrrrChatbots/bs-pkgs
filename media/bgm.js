@@ -9,31 +9,27 @@ bgmBook = (k, v) => {
 }
 
 event join (name, cont, url, tc) => {
-  tc = tc || false;
   book = bgmBook()
-  link = book["#" + tc] || book[name]
+  link = book[(tc && "#" + tc) || name])
   if link then playMusic(name + "'s bgm!", link)
 }
 
 event msg (name, cont: "/mybgm", url, tc) => {
-  tc = tc || false;
   if url then {
-    if tc then bgmBook("#" + tc, url)
-    else bgmBook(name, url)
+    bgmBook((tc && "#" + tc) || name, url)
     drrr.print("/meok!")
   }
   else {
     book = bgmBook()
-    link = book["#" + tc] || book[name]
+    link = book[tc && "#" + tc) || name]
     if link then drrr.print("BGM!!", link)
     else drrr.print("You don't have BGM QwQ")
   }
 }
 
 event msg (name, cont: "/nobgm", url, tc) => {
-  tc = tc || false;
   book = bgmBook()
-  delete book["#" + tc]
+  tc && delete book["#" + tc]
   delete book[name]
   localStorage["bgmBook"] = JSON.stringify(book)
   drrr.print("no!")
