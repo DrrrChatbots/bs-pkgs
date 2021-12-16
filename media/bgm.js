@@ -9,12 +9,14 @@ bgmBook = (k, v) => {
 }
 
 event join (name, cont, url, tc) => {
+  tc = tc || false;
   book = bgmBook()
   link = book["#" + tc] || book[name]
   if link then playMusic(name + "'s bgm!", link)
 }
 
 event msg (name, cont: "/mybgm", url, tc) => {
+  tc = tc || false;
   if url then {
     if tc then bgmBook("#" + tc, url)
     else bgmBook(name, url)
@@ -29,6 +31,7 @@ event msg (name, cont: "/mybgm", url, tc) => {
 }
 
 event msg (name, cont: "/nobgm", url, tc) => {
+  tc = tc || false;
   book = bgmBook()
   delete book["#" + tc]
   delete book[name]
