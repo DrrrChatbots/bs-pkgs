@@ -10,7 +10,7 @@ bgmBook = (k, v) => {
 
 event join (name, cont, url, tc) => {
   book = bgmBook()
-  link = book[(tc && "#" + tc) || name])
+  link = book[(tc && "#" + tc) || name]
   if link then playMusic(name + "'s bgm!", link)
 }
 
@@ -21,7 +21,7 @@ event msg (name, cont: "/mybgm", url, tc) => {
   }
   else {
     book = bgmBook()
-    link = book[tc && "#" + tc) || name]
+    link = book[(tc && "#" + tc) || name]
     if link then drrr.print("BGM!!", link)
     else drrr.print("You don't have BGM QwQ")
   }
