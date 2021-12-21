@@ -10,6 +10,7 @@
       {"type":"file","name":"infer_number.js"},
       {"type":"file","name":"monopoly.js"},
       {"type":"file","name":"monopoly.md"},
+      {"type":"file","name":"ship.js"},
       {"type":"file","name":"spy.js"},
       {"type":"file","name":"werewolf.js"}
     ]},
@@ -38,5 +39,5 @@
       {"type":"file","name":"tg_proxy.js"}
     ]}
   ]},
-  {"type":"report","directories":6,"files":26}
+  {"type":"report","directories":6,"files":27}
 ]
