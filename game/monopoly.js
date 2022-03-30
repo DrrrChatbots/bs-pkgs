@@ -193,7 +193,7 @@ onEstate = (this, player) => {
         cur = players[name]
         if cur then{
           val = Number(cont)
-          if val >= issue && then {
+          if val >= issue then {
             issuer = cur; issue = val;
             drrr.print("@" + name + " 出價 " + issue)
             count = 30;
