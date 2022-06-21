@@ -24,7 +24,7 @@ batch_print = msg => {
   })
   if(buffer.length) then msgs.push(buffer)
   msgs.reverse();
-  msgs.forEach(m => drrr.print(m))
+  msgs.forEach(m => drrr.print("/me" + m))
 }
 
 event [msg,me] (user, cont:'^#') => {
@@ -34,5 +34,5 @@ event [msg,me] (user, cont:'^#') => {
      + encodeURI(msg)
   fetch(url)
     .then(r=>r.json())
-    .then(r=>batch_print(r.content.replaceAll('{br}', '\n')));
+    .then(r=>batch_print(("@" + user + " " + r.content).replaceAll('{br}', '\n')));
 }
