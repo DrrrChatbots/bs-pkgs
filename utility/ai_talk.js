@@ -27,7 +27,7 @@ batch_print = msg => {
   msgs.forEach(m => drrr.print(m))
 }
 
-event msg (user, cont:'^#') => {
+event [msg,me] (user, cont:'^#') => {
   msg = cont.substr(1)
   print(msg)
   url='http://api.qingyunke.com/api.php?key=free&appid=0&msg='
