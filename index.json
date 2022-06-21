@@ -32,6 +32,7 @@
       {"type":"file","name":"seq_report.js"}
   ]},
     {"type":"directory","name":"utility","contents":[
+      {"type":"file","name":"ai_talk.js"},
       {"type":"file","name":"bkg_main.js"},
       {"type":"file","name":"download.js"},
       {"type":"file","name":"hook.js"},
@@ -42,5 +43,5 @@
   ]}
   ]}
 ,
-  {"type":"report","directories":6,"files":28}
+  {"type":"report","directories":6,"files":29}
 ]
