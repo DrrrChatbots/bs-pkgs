@@ -9,7 +9,7 @@ txContracts = {}
 inRound = false
 
 newPlayer = name => {
-  name: name, money: 10500,
+  name: name, money: 10500, loc: 0,
   ests: {}, jail: 0, lics: 0
 }
 
@@ -76,44 +76,6 @@ earnEach = value => (player => {
   })
   player.money += (playerNames.length - 1) * value;
 })
-
-cards = {
-  "機會": [
-    ["擊落敵國米格機，得獎金3000元", earn(3000)],
-    ["檢舉間諜，得獎金2000元", earn(2000)],
-    ["經營小本生意，獲利1000元", earn(1000)],
-    ["繳赴美留學保證金，2400元", pay(2400)],
-    ["付學費，1500元", pay(1500)],
-    ["整修自己所有房屋，房屋每棟250元、旅館每棟1000元", fixBldgs(250, 1000)],
-    ["付戶稅，房屋每棟400元、旅館每棟1150元", fixBldgs(400, 1150)],
-    ["前進到博愛路，如經過『由此去』得2000元", goTo("博愛路")],
-    ["前進到民族路，如經過『由此去』得2000元", goTo("民族路")],
-    ["直達台中車站，如經過『由此去』得2000元", goTo("台中車站")],
-    ["銀行付你利息，500元", earn(500)],
-    ["行車超速，罰款150元", pay(150)],
-    ["酗酒鬧事，罰款200元", pay(200)],
-    ["出獄許可證，此證可保留或出售", getLicense],
-    ["拘票-立刻坐牢，不得經『由此去』", goJail],
-    ["運動跳水冠軍，得獎金1000元", earn(1000)],
-  ],
-  "命運": [
-    ["敬軍愛國，捐款1000元", pay(1000)],
-    ["中『愛國獎券』五獎，得2000元", earn(2000)],
-    ["當棉被一條，得500元", earn(500)],
-    ["賣『黃牛票』，罰款1000元或取『機會』一張"],
-    ["路不拾遺失主酬勞，得1000元", earn(1000)],
-    ["出獄許可證，此證可保留或出售", getLicense],
-    ["婦產科醫院，1000元", earn(1000)],
-    ["整修自己所有房屋，房屋每棟250元、旅館每棟1000元", fixBldgs(250, 1000)],
-    ["選美會獲得亞軍，得100元", earn(100)],
-    ["拘票-立刻坐牢，不得經『由此去』", goJail],
-    ["小偷光顧，損失500元", pay(500)],
-    ["工作努力，得獎金2000元", earn(2000)],
-    ["付保險費，500元", pay(500)],
-    ["這是你的生日，向每人收取禮金100元", earnEach(100)],
-    ["得美國華盛頓大學，獎學金2000元", earn(2000)],
-  ]
-}
 
 randomInt = (min, max) => Math.floor(Math.random()*(max-min+1))+min;
 
@@ -319,22 +281,63 @@ map = [
   Estate("新北", "g", "新生北路", 4000, [500, 2000, 6000, 14000, 17000, 20000], 2000),
 ]
 
+cards = {
+  "機會": [
+    ["擊落敵國米格機，得獎金3000元", earn(3000)],
+    ["檢舉間諜，得獎金2000元", earn(2000)],
+    ["經營小本生意，獲利1000元", earn(1000)],
+    ["繳赴美留學保證金，2400元", pay(2400)],
+    ["付學費，1500元", pay(1500)],
+    ["整修自己所有房屋，房屋每棟250元、旅館每棟1000元", fixBldgs(250, 1000)],
+    ["付戶稅，房屋每棟400元、旅館每棟1150元", fixBldgs(400, 1150)],
+    ["前進到博愛路，如經過『由此去』得2000元", goTo("博愛路")],
+    ["前進到民族路，如經過『由此去』得2000元", goTo("民族路")],
+    ["直達台中車站，如經過『由此去』得2000元", goTo("台中車站")],
+    ["銀行付你利息，500元", earn(500)],
+    ["行車超速，罰款150元", pay(150)],
+    ["酗酒鬧事，罰款200元", pay(200)],
+    ["出獄許可證，此證可保留或出售", getLicense],
+    ["拘票-立刻坐牢，不得經『由此去』", goJail],
+    ["運動跳水冠軍，得獎金1000元", earn(1000)],
+  ],
+  "命運": [
+    ["敬軍愛國，捐款1000元", pay(1000)],
+    ["中『愛國獎券』五獎，得2000元", earn(2000)],
+    ["當棉被一條，得500元", earn(500)],
+    ["賣『黃牛票』，罰款1000元或取『機會』一張"],
+    ["路不拾遺失主酬勞，得1000元", earn(1000)],
+    ["出獄許可證，此證可保留或出售", getLicense],
+    ["婦產科醫院，1000元", earn(1000)],
+    ["整修自己所有房屋，房屋每棟250元、旅館每棟1000元", fixBldgs(250, 1000)],
+    ["選美會獲得亞軍，得100元", earn(100)],
+    ["拘票-立刻坐牢，不得經『由此去』", goJail],
+    ["小偷光顧，損失500元", pay(500)],
+    ["工作努力，得獎金2000元", earn(2000)],
+    ["付保險費，500元", pay(500)],
+    ["這是你的生日，向每人收取禮金100元", earnEach(100)],
+    ["得美國華盛頓大學，獎學金2000元", earn(2000)],
+  ]
+}
+
+
 valEst = map.filter(e => e.price).map(e => e.name)
 
 try_toss_same_point = player => {
   count = 3
-  drrr.print("想要擲骰子嗎？（同點即可出獄）.r\n老實蹲著 .n\n使用出獄許可證 .l")
+  drrr.print("@" + player.name + " 想要擲骰子嗎？（同點即可出獄）.r\n老實蹲著 .n\n使用出獄許可證 .l")
   event [msg, me] (name: specify(player.name), cont: "^\\.r") => {
-    a = randomInt(1, 6); b = randomInt(1, 6)
-    drrr.print("(" + String(a) + ", " + String(b) + ")");
-    if a == b then {
-      player.jail = 0;
-      toss_go(player);
-    }
-    else{
-      count -= 1;
-      if count then drrr.print("剩下 " + String(count) + " 次機會");
-      else going nextRound;
+    if player.jail {
+      a = randomInt(1, 6); b = randomInt(1, 6)
+      drrr.print("(" + String(a) + ", " + String(b) + ")");
+      if a == b then {
+        player.jail = 0;
+        toss_go(player);
+      }
+      else{
+        count -= 1;
+        if count then drrr.print("剩下 " + String(count) + " 次機會");
+        else going nextRound;
+      }
     }
   }
   event [me, msg] (name: specify(player.name), cont: "^\\.n") => going nextRound;
@@ -363,21 +366,21 @@ toss_go = player => {
 }
 
 bankrupts = player => {
-  drrr.print("@" + player.name + "破產")
+  drrr.print("@" + player.name + " 破產")
   ests = Object.keys(player.ests)
   ests.forEach(k => {
-    restBldg[0] += ests[c] % 5;
-    restBldg[1] += Math.floor(ests[c] / 5);
+    restBldg[0] += ests[k] % 5;
+    restBldg[1] += Math.floor(ests[k] / 5);
   })
   map.forEach(e => if ests.includes(e.name) then e.owner = false )
 }
 
 state nextRound {
   player = players[playerNames[curIndex]]
-  showPlayer(player)
+  showPlayer(player.name)
   if player.money <= 0 then {
     drrr.print(player.name + " 瀕臨破產，須調整現金 >= 0，完成調整 .ok")
-    event [msg, me] (name, cont: "^.ok\\s*$") => {
+    event [msg, me] (name, cont: "^\\.ok\\s*$") => {
       if player.money >= 0 then
         curIndex = (curIndex + 1) % playerNames.length;
       else {
@@ -466,7 +469,7 @@ withUsrEst = (usrName, estName) => {
   player = assocPlayer(usrName)
   if !player then
   { drrr.print("Not player"); false }
-  else if !(estName in player.est) then
+  else if !(estName in player.ests) then
   { drrr.print("No such estate"); false }
   else [player, map.find(a => a.name == estName)]
 }
@@ -523,7 +526,14 @@ build = (player, est) => {
 monopoly = () => {
   drrr.print("monopoly rock'n roll");
   running = false;
-  event [msg, me] (name, cont: "^.join\\s*$") => {
+
+  event [msg, me] (name, cont: "^\\.now\\s*$") => {
+    drrr.repeat();
+  }
+  event [msg, me] (name, cont: "^\\.help\\s*$") => {
+    drrr.print("help:", "https://github.com/DrrrChatbots/bs-pkgs/blob/main/game/monopoly.md")
+  }
+  event [msg, me] (name, cont: "^\\.join\\s*$") => {
     if playerNames.includes(name)
     then drrr.print("@" + name + " already joined")
     else{
@@ -535,18 +545,18 @@ monopoly = () => {
   event [msg, me] (name, cont: "^.go\\s*$") => {
     if running then drrr.print("Game is running");
     else if !playerNames.length then drrr.print("No user now")
-    else { running = true; going Round; }
+    else { running = true; inRound = true; going Round; }
   }
   event [msg, me] (name, cont: "^.map\\s*$") => {
     drrr.print(textMap);
   }
-  event [msg, me] (name, cont: "^.asset\\s*$") => {
+  event [msg, me] (name, cont: "^\\.asset\\s*$") => {
     if playerNames.includes(name)
     then showPlayer(name)
     else drrr.print("Not in game")
   }
   event [msg, me] (name, cont: "^\\.tx.*for.*") => {
-    if !inRound then print("not in round")
+    if !inRound then drrr.log("not in round")
     else {
       parts = cont.substr(3).split("for")
       a = parts[0].split(" ");
@@ -564,7 +574,7 @@ monopoly = () => {
   }
   event [msg, me] (name, cont: "^\\.acc\\s*\\d+$") => {
     id = cont.replace(".acc", "")
-    if !inRound then print("not in round")
+    if !inRound then drrr.log("not in round")
     else if !txContracts[id]
     then drrr.print("contract #" + id + " no exist")
     else if name != txContracts[id].B.name
@@ -572,8 +582,8 @@ monopoly = () => {
     else fullfill(txContracts[id])
   }
   event [msg, me] (name, cont: "^\\.build.*$") => {
-    usrEst = withUsrEst(name, cont.replace(".build").trim())
-    if !inRound then print("not in round")
+    usrEst = withUsrEst(name, cont.replace(".build", "").trim())
+    if !inRound then drrr.log("not in round")
     else if usrEst then {
       player = usrEst[0]; est = usrEst[1]
       error = buildError(player, est)
@@ -582,8 +592,8 @@ monopoly = () => {
     }
   }
   event [msg, me] (name, cont: "^\\.destory.*$") => {
-    usrEst = withUsrEst(name, cont.replace(".destory").trim())
-    if !inRound then print("not in round")
+    usrEst = withUsrEst(name, cont.replace(".destory", "").trim())
+    if !inRound then drrr.log("not in round")
     else if usrEst then {
       player = usrEst[0]; est = usrEst[1]
       error = destoryError(player, est)
@@ -592,8 +602,8 @@ monopoly = () => {
     }
   }
   event [msg, me] (name, cont: "^\\.mort.*$") => {
-    usrEst = withUsrEst(name, cont.replace(".mort").trim())
-    if !inRound then print("not in round")
+    usrEst = withUsrEst(name, cont.replace(".mort", "").trim())
+    if !inRound then drrr.log("not in round")
     else if usrEst then {
       player = usrEst[0]; est = usrEst[1]
       est = map.find(a => a.name == an)
@@ -606,8 +616,8 @@ monopoly = () => {
     }
   }
   event [msg, me] (name, cont: "^\\.trom.*$") => {
-    usrEst = withUsrEst(name, cont.replace(".trom").trim())
-    if !inRound then print("not in round")
+    usrEst = withUsrEst(name, cont.replace(".trom", "").trim())
+    if !inRound then drrr.log("not in round")
     else if usrEst then {
       player = usrEst[0]; est = usrEst[1]
       if !est.mort then drrr.print("Is not mortgaged")
@@ -619,10 +629,11 @@ monopoly = () => {
   auct_count = 30; auct_issue = 0;
   auct_seller = false; auct_buyer = false;
   event [msg, me] (name, cont: "^\\.auct.*$") => {
-    oprand = cont.replace(".auct").trim()
+    oprand = cont.replace(".auct", "").trim()
     usrEst = withUsrEst(name, oprand)
-    if !inRound then print("not in round")
+    if !inRound then drrr.log("not in round")
     else if usrEst then {
+      inRound = false;
       player = usrEst[0]; est = usrEst[1]
       if auct_m == 0 then {
         error = destoryError(player, est)
@@ -658,7 +669,10 @@ monopoly = () => {
             auct_seller.money += issue;
             // TODO announce
           }
-          else drrr.print("房屋競拍流標")
+          else {
+            drrr.print("房屋競拍流標")
+            inRound = true;
+          }
         }
         else if auct_count == 5 then drrr.print("房屋競拍倒數 5 秒")
       }, 1000)
@@ -686,7 +700,7 @@ bkg_main = (name, room, main) => {
   next = cookie => {
     if cookie then localStorage.setItem("cookie", cookie);
     if room == "roomID"
-    then print("Set your roomID");
+    then drrr.log("Set your roomID");
     else drrr.join(room, main);
   }
   if drrr.cookie then drrr.getProfile(() => next());

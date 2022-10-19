@@ -301,9 +301,7 @@ most = (arr) => {
     a[c] = (if a.hasOwnProperty(c) then a[c] else 0) + 1
     a
   }, Object())
-  print(counts)
   maxCount = Math.max.apply(Object(), Object.values(counts))
-  print(maxCount)
   Object.keys(counts).filter(k => counts[k] === maxCount)
 }
 
@@ -783,7 +781,6 @@ state shooter_fire {
     if hunter in players then {
 
       if new_dead.includes(hunter) then {
-        print("yes you are here")
         if isShooter(players[hunter].role) && !new_expo.includes(hunter) then {
           new_expo.push(hunter)
           if players[hunter].role == rHunt
@@ -793,7 +790,6 @@ state shooter_fire {
         }
       }
       else if isShooter(players[hunter].role) && expo.includes(hunter) then {
-        print("no you are not here")
         the = select(cont, names)
         if the then {
           if players[the].life then {
@@ -972,7 +968,7 @@ state day_vote {
 
   lock = false
 
-  event [msg, me, dm] (user, cont: "^/vote\\s+\\S+|^/execute", url, tc, req) => {
+  event [msg, me, dm] (user, cont: "^/vote\\s+\\S+|^/execute", tc, url, req) => {
     cont = cont.replace("/vote", "").trim()
     if user in players && !lock then {
       if players[user].right then {
@@ -1017,7 +1013,7 @@ state day_vote {
       } else drrr.print(T("noRight"))
     } else drrr.print(me(T("beQuiet")(user)))
   }
-  event [msg, me, dm] (user, cont: "^/vote\\s*$", url, tc, req) => {
+  event [msg, me, dm] (user, cont: "^/vote\\s*$", tc, url, req) => {
     if req.type == "dm"
     then drrr.dm(user, me(T("curVote")(Object.keys(vote).join(", "))))
     else drrr.print(me(T("curVote")(Object.keys(vote).join(", "))))

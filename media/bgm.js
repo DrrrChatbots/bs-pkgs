@@ -8,13 +8,13 @@ bgmBook = (k, v) => {
   }
 }
 
-event join (name, cont, url, tc) => {
+event join (name, cont, tc, url) => {
   book = bgmBook()
   link = book[(tc && "#" + tc) || name]
   if link then playMusic(name + "'s bgm!", link)
 }
 
-event msg (name, cont: "/mybgm", url, tc) => {
+event msg (name, cont: "/mybgm", tc, url) => {
   if url then {
     bgmBook((tc && "#" + tc) || name, url)
     drrr.print("/meok!")
@@ -27,7 +27,7 @@ event msg (name, cont: "/mybgm", url, tc) => {
   }
 }
 
-event msg (name, cont: "/nobgm", url, tc) => {
+event msg (name, cont: "/nobgm", tc, url) => {
   book = bgmBook()
   tc && delete book["#" + tc]
   delete book[name]

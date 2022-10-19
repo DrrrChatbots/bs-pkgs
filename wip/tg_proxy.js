@@ -7,7 +7,7 @@ log2mkd = (type, e) => {
     then urlfmt("*", e)
   else if(type === event_me)
     then urlfmt("_", e)
-  else if(type === event_dm) then
+  else if(type === event_dm)
     then urlfmt("", e)
   else if(type === event_join)
     then e.user + " join the room"

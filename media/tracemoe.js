@@ -1,5 +1,5 @@
 time = s => (new Date(s * 1000)).toISOString().substr(11, 8)
-event msg (u, m:"^/moe", url) => {
+event msg (u, m:"^/moe", tc, url) => {
   url = "https://api.trace.moe/search?url=" + encodeURIComponent(url)
   ep = if res.episode then " ep." + res.episode else ""
   $.get(url, res => {

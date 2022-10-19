@@ -14,17 +14,17 @@ mes = (type, tag, ch, u, str) => {
 }
 
 event [msg, me] (u, m: "^/") => {
-  
+
   name = m.substring(m.indexOf("@"));
   textfrmt = (if m.match("@") then "@" + u + " --> " + name else "@" + u + ":");
 //__________________________pictures__________________________
-  
+
   if m.match("^/waifu\\s18") then
     mes("nsfw", "waifu", false, u, "( ͡° ͜ʖ ͡°) Your perverted waifu:");
   else if m.match("^/neko\\s18") then
     mes("nsfw", "neko", false, u, "Meow~ Your perverted neko:");
   else if m.match("^/trap") then
-    mes("nsfw", "trap", false, u, "¯\\_(ツ)_/¯ It was your choice:"); 
+    mes("nsfw", "trap", false, u, "¯\\_(ツ)_/¯ It was your choice:");
   else if m.match("^/blowjob") then
     mes("nsfw", "blowjob", false, u, "Deep breath and..");
   else if m.match("^/waifu") then
@@ -37,12 +37,12 @@ event [msg, me] (u, m: "^/") => {
     mes("sfw", "megumin", true, u, "@" + u + ", EXPLOOOOSION!!?!?!?");
   else if m.match("^/awoo") then
     mes("sfw", "awoo", true, u, "@" + u + ", Awwwoaow~~");
-  
+
 //__________________________GIFS__________________________
-  
+
   else if m.match("^/bully") then
     mes("sfw", "bully", true, u, textfrmt);
-  else if m.match("^/cuddle") then                                
+  else if m.match("^/cuddle") then
     mes("sfw", "cuddle", true, u, textfrmt);
   else if m.match("^/cry") then
     mes("sfw", "cry", true, u, textfrmt);

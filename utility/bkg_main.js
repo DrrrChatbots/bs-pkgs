@@ -18,7 +18,7 @@ bkg_main = (name, room, main) => {
   next = cookie => {
     if cookie then localStorage.setItem("cookie", cookie);
     if room == "roomID"
-    then print("set your roomID");
+    then drrr.log("set your roomID");
     else drrr.join(room, main);
   }
 

@@ -22,7 +22,7 @@ calculate = cards => {
 showUsers = show => {
   drrr.print(Object.values(players).map(p =>
     p.name + ": " + p.money +
-    (if show then p.points else "") + " [" +
+    (if show then (p.points || 0) else "") + " [" +
     (if banker.name == p.name
     then "banker" else p.wager) + "]").join("\n"))
 }
@@ -40,7 +40,7 @@ showCards = () => {
 
 event [msg, me] (name, cont: "^\\.d\\s*$") => {
   if banker && banker.name == name then {
-    deck = []
+    deck = [];
     [0, 1, 2, 3].forEach(s => {
       [1, 2, 3, 4, 5, 6, 7
         , 8, 9, 10, 11, 12, 13].forEach(n => {
@@ -80,6 +80,8 @@ event [msg, me] (name, cont: "^\\.1\\s*$") => {
     status = ""
     if busted then status = " (busted)"
     else if passed then status = " (passed)"
+
+    drrr.log(busted, passed, player.points)
 
     if status.length then player.points = status
     else player.points = " (" + player.points / 10 + ")"

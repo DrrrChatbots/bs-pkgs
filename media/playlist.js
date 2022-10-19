@@ -42,7 +42,6 @@ play_repeat = () => {
 }
 
 event musicend {
-  print("music end")
   play_next()
 }
 
@@ -55,13 +54,13 @@ try_next = () => {
     console.log(active, after);
     if !active
     then play_next()
-    else print("there's a song playing")
+    else drrr.log("there's a song playing")
   })
 }
 
 fetch_list = id => {
   url = API_SERVER + "/playlist/detail?id=" + id
-  print(url)
+  drrr.log(url)
   $.get(url, d => {
     playlist = d.playlist
     songs = playlist.trackIds.map(track => track.id)

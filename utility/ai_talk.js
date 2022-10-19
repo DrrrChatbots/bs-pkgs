@@ -1,7 +1,7 @@
 // http://api.qingyunke.com
 chrome.permissions.request({
   origins: ['http://api.qingyunke.com/*'],
-}, (ok) => print("request: " + ok));
+}, (ok) => drrr.log("request: " + ok));
 
 chunkString = (size, str) => {
   pos = 0; chunks = []
@@ -29,7 +29,7 @@ batch_print = msg => {
 
 event [msg,me] (user, cont:'^#') => {
   msg = cont.substr(1)
-  print(msg)
+  drrr.log(msg)
   url='http://api.qingyunke.com/api.php?key=free&appid=0&msg='
      + encodeURI(msg)
   fetch(url)
