@@ -9,7 +9,7 @@ chunkString = (size, str) => {
     chunks.push(str.substr(pos, size))
     pos += size
   }
-  return chunks
+  chunks
 }
 
 batch_print = msg => {
