@@ -1198,7 +1198,7 @@ werewolf = (lang) => {
   going prepare
 }
 
-console.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" are available now")
+drrr.log("need call werewolf(lang) to start it,\n\"zh\" and \"en\" are available now")
 
 /* new features wait to test */
 // /side

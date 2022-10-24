@@ -2,7 +2,7 @@ urlfmt = (fix, e) => fix + e.user + fix + ": " + e.text + (if e.url then "[URL](
 
 log2mkd = (type, e) => {
   //type, user, text, url
-  console.log("log data", e);
+  drrr.log("log data", e);
   if(type === event_msg)
     then urlfmt("*", e)
   else if(type === event_me)
@@ -28,8 +28,8 @@ sendTg = (token, chat_id, type, e) => {
       "parse_mode": "Markdown",
       "disable_web_page_preview": false,
     },
-    "success": (data) => console.log("logged:", data),
-    "error": (data) => console.log("failed:", data)
+    "success": (data) => drrr.log("logged:", data),
+    "error": (data) => drrr.log("failed:", data)
   });
 }
 

@@ -51,7 +51,7 @@ try_next = () => {
   }, false, (status) => {
     active = status[0]
     after = status[1]
-    console.log(active, after);
+    drrr.log(active, after);
     if !active
     then play_next()
     else drrr.log("there's a song playing")
