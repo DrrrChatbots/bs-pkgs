@@ -138,7 +138,7 @@ payStation = (this, player) => {
 }
 
 onEstate = (this, player) => {
-  if this.owner then this.pay(this. player);
+  if this.owner then this.pay(this, player);
   else {
     drrr.print("想要買下這塊地嗎？(.y/.n)")
     event [me, msg] (name: specify(player.name), cont: "\\.y") => {
@@ -606,7 +606,6 @@ monopoly = () => {
     if !inRound then drrr.log("not in round")
     else if usrEst then {
       player = usrEst[0]; est = usrEst[1]
-      est = map.find(a => a.name == an)
       bldgs = series(est)
                 .map(e => player.ests[e.name] || 0)
                 .reduce((a, b) => a + b)
